@@ -85,18 +85,26 @@ function deleteTodo(todoId){
     });
 }
 
-function changeStatus(projectId, newStatus){
+function changeStatus(projectId, todoId, newStatus){
     projectsArray.forEach(project => {
         if(project.id === projectId){
-            project.todos.status = newStatus
+            project.todos.forEach(todo =>{
+                if(todo.id === todoId){
+                    todo.status = newStatus
+                }
+            })
         }
     })
 }
 
-function setDueDate(projectId, dueDate){
+function setDueDate(projectId, todoId , dueDate){
     projectsArray.forEach(project =>{
         if(project.id === projectId){
-            project.todos.dueDate = dueDate
+            project.todos.forEach(todo => {
+                if(todo.id === todoId){
+                    todo.dueDate = dueDate
+                }
+            })
         }
     })
 }
@@ -123,10 +131,10 @@ defaultProject.todos.push(defaultTodo)
 defaultProject.todos.push(testTodo1)
 
 
-// console.log(projectsArray)
+console.log(projectsArray)
 
-projectsArray.forEach(project => {
-    console.log(project.todos[0])
-})
+// projectsArray.forEach(project => {
+//     console.log(project.todos[0])
+// })
 
 
