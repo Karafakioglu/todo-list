@@ -85,7 +85,7 @@ function deleteTodo(todoId){
     });
 }
 
-function changeStatus(projectId, todoId, newStatus){
+function changeTodoStatus(projectId, todoId, newStatus){
     projectsArray.forEach(project => {
         if(project.id === projectId){
             project.todos.forEach(todo =>{
@@ -97,12 +97,47 @@ function changeStatus(projectId, todoId, newStatus){
     })
 }
 
-function setDueDate(projectId, todoId , dueDate){
+function setTodoDueDate(projectId, todoId , dueDate){
     projectsArray.forEach(project =>{
         if(project.id === projectId){
             project.todos.forEach(todo => {
                 if(todo.id === todoId){
                     todo.dueDate = dueDate
+                }
+            })
+        }
+    })
+}
+
+// function editTodo(projectId, todoId, title, description, dueDate, status, priority, notes){
+//     projectsArray.forEach(project =>{
+//         if(project.id === projectId){
+//             project.todos.forEach(todo => {
+//                 if(todo.id === todoId){
+//                     todo.title = title;
+//                     todo.description = description;
+//                     todo.dueDate = dueDate;
+//                     todo.status = status;
+//                     todo.priority = priority;
+//                     todo.notes = notes
+//                 }
+//             })
+//         }
+//     })
+// }
+
+function editTodo(projectId, todoId, updates){
+    const forbiddenKeys = ["id", "creationDate"]
+    projectsArray.forEach(project =>{
+        if(project.id === projectId){
+            project.todos.forEach(todo => {
+                if(todo.id === todoId){
+                    for (const updateKey in updates){
+                        if (forbiddenKeys.includes(updateKey)){
+                            continue
+                        }
+                        todo[updateKey] = updates[updateKey]
+                    }
                 }
             })
         }
@@ -116,8 +151,9 @@ window.getProjects = getProjects;
 
 window.createTodo = createTodo;
 window.deleteTodo = deleteTodo;
-window.changeStatus = changeStatus;
-window.setDueDate = setDueDate;
+window.changeTodoStatus = changeTodoStatus;
+window.setTodoDueDate = setTodoDueDate;
+window.editTodo = editTodo;
 
 
 
