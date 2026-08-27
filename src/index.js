@@ -1,18 +1,23 @@
 import "./style.css";
+import {format} from "date-fns"
+
+
+
 
 const projectsArray = []
 
 class Project {
-    constructor(title, description){
+    constructor(title, description, creationDate){
         this.title = title;
         this.description = description;
         this.id = createRandomId()
         this.todos = [];
+        this.creationDate = creationDate;
     }
 }
 
 class Todo {
-    constructor(title, description, dueDate, status, priority, notes){
+    constructor(title, description, dueDate, status, priority, notes, creationDate){
         this.title = title;
         this.description = description;
         this.id = createRandomId()
@@ -20,6 +25,7 @@ class Todo {
         this.status = status;
         this.priority = priority;
         this.notes = notes;
+        this.creationDate = creationDate
     }
 }
 
@@ -27,38 +33,100 @@ function createRandomId(){
     return self.crypto.randomUUID()
 }
 
-export function addProject(title, description){
-    projectsArray.push(new Project(title, description))
+const dateHandle = function(){
+
+    function getCurrentDate(){
+        const date = new Date()
+        const todaysDate = format(date, "dd/MM/yyyy");
+        return todaysDate
+    }
+    return {getCurrentDate}
+}()
+
+
+function createProject(title, description){
+    console.log("Created project")
+    projectsArray.push(new Project(title, description, dateHandle.getCurrentDate()))
 }
 
 function deleteProject(id){
     const index = projectsArray.findIndex((element) => element.id === id)
+    if(index === -1){
+        console.log("No project with given id found")
+        return
+    }
+    console.log(`Deleting project id with ${id}`)
     projectsArray.splice(index,1)
 }
 
-export function displayProject(){
+function getProjects(){
     console.table(projectsArray)
     projectsArray.forEach(element => {
         console.log(element.todos)
     });
 }
 
+function createTodo(title, description, dueDate, status, priority, notes, projectId){
+    console.log("Creating todo with title" + title)
+    projectsArray.forEach(project => {
+        if(project.id === projectId){
+            project.todos.push(new Todo(title, description, dueDate, status, priority, notes, dateHandle.getCurrentDate()))
+        }
+    });
+}
+
+function deleteTodo(todoId){
+    projectsArray.forEach(project => {
+        const index = project.todos.findIndex((todo) => todo.id === todoId)
+        if(index === -1){
+            return
+        }
+        project.todos.splice(index,1)
+    });
+}
+
+function changeStatus(projectId, newStatus){
+    projectsArray.forEach(project => {
+        if(project.id === projectId){
+            project.todos.status = newStatus
+        }
+    })
+}
+
+function setDueDate(projectId, dueDate){
+    projectsArray.forEach(project =>{
+        if(project.id === projectId){
+            project.todos.dueDate = dueDate
+        }
+    })
+}
+
 //testing purposes to use them in console.
-window.addProject = addProject;
+window.createProject = createProject;
 window.deleteProject = deleteProject;
-window.displayProject = displayProject;
+window.getProjects = getProjects;
+
+window.createTodo = createTodo;
+window.deleteTodo = deleteTodo;
+window.changeStatus = changeStatus;
+window.setDueDate = setDueDate;
 
 
 
-const defaultTodo = new Todo("Default todo", "default desc", null, null, null)
+const defaultTodo = new Todo("Default todo", "Default desc", "Default Date 20.05.1994", "Done", "Default Priority", "Default Notes")
 const defaultProject = new Project("Default Project", "This is a default project");
+const testTodo1 = new Todo("testTodo1", "testTodo1 desc", "testTodo1 Date 20.05.1994", "testTodo1 Done", "testTodo1 Priority", "testTodo1 Notes")
 
 
 projectsArray.push(defaultProject);
 defaultProject.todos.push(defaultTodo)
+defaultProject.todos.push(testTodo1)
 
-const tempTodo = new Todo("x", null, null, null, null, null, null)
-defaultProject.todos.push(tempTodo)
 
-console.log(projectsArray)
+// console.log(projectsArray)
+
+projectsArray.forEach(project => {
+    console.log(project.todos[0])
+})
+
 
