@@ -7,17 +7,17 @@ import {format} from "date-fns"
 const projectsArray = []
 
 class Project {
-    constructor(title, description, creationDate){
+    constructor(title, description){
         this.title = title;
         this.description = description;
         this.id = createRandomId()
         this.todos = [];
-        this.creationDate = creationDate;
+        this.creationDate = dateHandle.getCurrentDate();
     }
 }
 
 class Todo {
-    constructor(title, description, dueDate, status, priority, notes, creationDate){
+    constructor(title, description, dueDate, status, priority, notes){
         this.title = title;
         this.description = description;
         this.id = createRandomId()
@@ -25,7 +25,7 @@ class Todo {
         this.status = status;
         this.priority = priority;
         this.notes = notes;
-        this.creationDate = creationDate
+        this.creationDate = dateHandle.getCurrentDate()
     }
 }
 
@@ -85,47 +85,6 @@ function deleteTodo(todoId){
     });
 }
 
-function changeTodoStatus(projectId, todoId, newStatus){
-    projectsArray.forEach(project => {
-        if(project.id === projectId){
-            project.todos.forEach(todo =>{
-                if(todo.id === todoId){
-                    todo.status = newStatus
-                }
-            })
-        }
-    })
-}
-
-function setTodoDueDate(projectId, todoId , dueDate){
-    projectsArray.forEach(project =>{
-        if(project.id === projectId){
-            project.todos.forEach(todo => {
-                if(todo.id === todoId){
-                    todo.dueDate = dueDate
-                }
-            })
-        }
-    })
-}
-
-// function editTodo(projectId, todoId, title, description, dueDate, status, priority, notes){
-//     projectsArray.forEach(project =>{
-//         if(project.id === projectId){
-//             project.todos.forEach(todo => {
-//                 if(todo.id === todoId){
-//                     todo.title = title;
-//                     todo.description = description;
-//                     todo.dueDate = dueDate;
-//                     todo.status = status;
-//                     todo.priority = priority;
-//                     todo.notes = notes
-//                 }
-//             })
-//         }
-//     })
-// }
-
 function editTodo(projectId, todoId, updates){
     const forbiddenKeys = ["id", "creationDate"]
     projectsArray.forEach(project =>{
@@ -151,8 +110,6 @@ window.getProjects = getProjects;
 
 window.createTodo = createTodo;
 window.deleteTodo = deleteTodo;
-window.changeTodoStatus = changeTodoStatus;
-window.setTodoDueDate = setTodoDueDate;
 window.editTodo = editTodo;
 
 
@@ -165,12 +122,4 @@ const testTodo1 = new Todo("testTodo1", "testTodo1 desc", "testTodo1 Date 20.05.
 projectsArray.push(defaultProject);
 defaultProject.todos.push(defaultTodo)
 defaultProject.todos.push(testTodo1)
-
-
-console.log(projectsArray)
-
-// projectsArray.forEach(project => {
-//     console.log(project.todos[0])
-// })
-
 
