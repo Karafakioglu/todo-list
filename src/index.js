@@ -1,8 +1,5 @@
 import "./style.css";
-import {format} from "date-fns"
-
-
-
+import * as helperFunctions from "./helperFunctions.js";
 
 const projectsArray = []
 
@@ -10,9 +7,9 @@ class Project {
     constructor(title, description){
         this.title = title;
         this.description = description;
-        this.id = createRandomId()
+        this.id = helperFunctions.createRandomId()
         this.todos = [];
-        this.creationDate = dateHandle.getCurrentDate();
+        this.creationDate = helperFunctions.getCurrentDate();
     }
 }
 
@@ -20,39 +17,41 @@ class Todo {
     constructor(title, description, dueDate, status, priority, notes){
         this.title = title;
         this.description = description;
-        this.id = createRandomId()
+        this.id = helperFunctions.createRandomId()
         this.dueDate = dueDate;
         this.status = status;
         this.priority = priority;
         this.notes = notes;
-        this.creationDate = dateHandle.getCurrentDate()
+        this.creationDate = helperFunctions.getCurrentDate()
     }
 }
-
-function createRandomId(){
-    return self.crypto.randomUUID()
-}
-
-const dateHandle = function(){
-
-    function getCurrentDate(){
-        const date = new Date()
-        const todaysDate = format(date, "dd/MM/yyyy");
-        return todaysDate
-    }
-    return {getCurrentDate}
-}()
-
 
 function createProject(title, description){
     console.log("Created project")
-    projectsArray.push(new Project(title, description, dateHandle.getCurrentDate()))
+    projectsArray.push(new Project(title, description))
 }
 
-function deleteProject(id){
-    const index = projectsArray.findIndex((element) => element.id === id)
+function editProject(projectId, updates){
+    const forbiddenKeys = ["id", "creationDate", "todos"]
+    const project = projectsArray.find((project) => project.id === projectId)
+
+    if(!project){
+        console.log("No project")
+        return
+    }else{
+        for (const updateKey in updates){
+            if(forbiddenKeys.includes(updateKey)){
+                continue
+            }
+            project[updateKey] = updates[updateKey]
+        }
+    }
+}
+
+function deleteProject(projectId){
+    const index = projectsArray.findIndex((element) => element.id === projectId)
     if(index !== -1){
-        console.log(`Deleting project id with ${id}`)
+        console.log(`Deleting project id with ${projectId}`)
         projectsArray.splice(index,1)
     }else{
         console.log("no project found")
@@ -73,7 +72,7 @@ function getProjects(){
     
 }
 
-function createTodo(title, description, dueDate, status, priority, notes, projectId){
+function createTodo(projectId, title, description, dueDate, status, priority, notes){
    const project = projectsArray.find((project) => project.id === projectId)
    if(!project){
     console.log("No project")
@@ -81,11 +80,11 @@ function createTodo(title, description, dueDate, status, priority, notes, projec
     }
     else{
         console.log("Todo created")
-        project.todos.push(new Todo(title, description, dueDate, status, priority, notes, dateHandle.getCurrentDate()))
+        project.todos.push(new Todo(title, description, dueDate, status, priority, notes))
     }
 }
 
-function deleteTodo(todoId, projectId){
+function deleteTodo(projectId, todoId){
     const project = projectsArray.find((project) => project.id === projectId)
    
     if(!project){
@@ -103,27 +102,9 @@ function deleteTodo(todoId, projectId){
     }
 }
 
-// function editTodo(projectId, todoId, updates){
-//     const forbiddenKeys = ["id", "creationDate"]
-//     projectsArray.forEach(project =>{
-//         if(project.id === projectId){
-//             project.todos.forEach(todo => {
-//                 if(todo.id === todoId){
-//                     for (const updateKey in updates){
-//                         if (forbiddenKeys.includes(updateKey)){
-//                             continue
-//                         }
-//                         todo[updateKey] = updates[updateKey]
-//                     }
-//                 }
-//             })
-//         }
-//     })
-// }
-
 function editTodo(projectId, todoId, updates){
     const project = projectsArray.find((project) => project.id === projectId)
-    const forbiddenKeys = ["id", "creationDate", "projectId"]
+    const forbiddenKeys = ["id", "creationDate"]
 
    
     if(!project){
@@ -150,6 +131,7 @@ function editTodo(projectId, todoId, updates){
 window.createProject = createProject;
 window.deleteProject = deleteProject;
 window.getProjects = getProjects;
+window.editProject = editProject;
 
 window.createTodo = createTodo;
 window.deleteTodo = deleteTodo;
