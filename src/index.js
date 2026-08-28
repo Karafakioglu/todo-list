@@ -14,7 +14,16 @@ window.createTodo = createTodo;
 window.deleteTodo = deleteTodo;
 window.editTodo = editTodo;
 
+const body = document.querySelector("body")
+
+const mainDiv = document.createElement("div");
+mainDiv.setAttribute("id", "main-div");
+
+const sidebarDiv = document.createElement("div")
+sidebarDiv.setAttribute("id", "sidebar-div")
 
 
+body.append(sidebarDiv)
+body.append(mainDiv)
 
 
