@@ -51,56 +51,99 @@ function createProject(title, description){
 
 function deleteProject(id){
     const index = projectsArray.findIndex((element) => element.id === id)
-    if(index === -1){
-        console.log("No project with given id found")
-        return
+    if(index !== -1){
+        console.log(`Deleting project id with ${id}`)
+        projectsArray.splice(index,1)
+    }else{
+        console.log("no project found")
     }
-    console.log(`Deleting project id with ${id}`)
-    projectsArray.splice(index,1)
+    
 }
 
 function getProjects(){
-    console.table(projectsArray)
-    projectsArray.forEach(element => {
-        console.log(element.todos)
-    });
+    if(projectsArray.length !== 0){
+        console.table(projectsArray)
+        projectsArray.forEach(element => {
+            console.log(element.todos)
+        });
+    }else{
+        console.log("No project!")
+    }
+
+    
 }
 
 function createTodo(title, description, dueDate, status, priority, notes, projectId){
-    console.log("Creating todo with title" + title)
-    projectsArray.forEach(project => {
-        if(project.id === projectId){
-            project.todos.push(new Todo(title, description, dueDate, status, priority, notes, dateHandle.getCurrentDate()))
-        }
-    });
+   const project = projectsArray.find((project) => project.id === projectId)
+   if(!project){
+    console.log("No project")
+    return
+    }
+    else{
+        console.log("Todo created")
+        project.todos.push(new Todo(title, description, dueDate, status, priority, notes, dateHandle.getCurrentDate()))
+    }
 }
 
-function deleteTodo(todoId){
-    projectsArray.forEach(project => {
+function deleteTodo(todoId, projectId){
+    const project = projectsArray.find((project) => project.id === projectId)
+   
+    if(!project){
+        console.log("No project")
+        return
+    }else{
         const index = project.todos.findIndex((todo) => todo.id === todoId)
-        if(index === -1){
-            return
+        if(index !== -1){
+            console.log("deleting todo")
+            project.todos.splice(index,1)
         }
-        project.todos.splice(index,1)
-    });
+        else{
+            console.log("No todo")
+        }
+    }
 }
+
+// function editTodo(projectId, todoId, updates){
+//     const forbiddenKeys = ["id", "creationDate"]
+//     projectsArray.forEach(project =>{
+//         if(project.id === projectId){
+//             project.todos.forEach(todo => {
+//                 if(todo.id === todoId){
+//                     for (const updateKey in updates){
+//                         if (forbiddenKeys.includes(updateKey)){
+//                             continue
+//                         }
+//                         todo[updateKey] = updates[updateKey]
+//                     }
+//                 }
+//             })
+//         }
+//     })
+// }
 
 function editTodo(projectId, todoId, updates){
-    const forbiddenKeys = ["id", "creationDate"]
-    projectsArray.forEach(project =>{
-        if(project.id === projectId){
-            project.todos.forEach(todo => {
-                if(todo.id === todoId){
-                    for (const updateKey in updates){
-                        if (forbiddenKeys.includes(updateKey)){
-                            continue
-                        }
-                        todo[updateKey] = updates[updateKey]
-                    }
+    const project = projectsArray.find((project) => project.id === projectId)
+    const forbiddenKeys = ["id", "creationDate", "projectId"]
+
+   
+    if(!project){
+        console.log("No project")
+        return
+    }else{
+        const index = project.todos.findIndex((todo) => todo.id === todoId)
+        if(index !== -1){
+            console.log("editing todo")
+            for (const updateKey in updates){
+                if(forbiddenKeys.includes(updateKey)){
+                    continue
                 }
-            })
+                project.todos[index][updateKey] = updates[updateKey]
+            }
         }
-    })
+        else{
+            console.log("No todo")
+        }
+    }
 }
 
 //testing purposes to use them in console.
