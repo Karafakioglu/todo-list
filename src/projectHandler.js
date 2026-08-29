@@ -57,5 +57,7 @@ export function getProjects(){
 
 
 const defaultProject = new Project("Default Project", "This is a default project");
+const secondProject = new Project("Some title", "Some description")
 
 projectsArray.push(defaultProject);
+projectsArray.push(secondProject)
