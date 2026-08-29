@@ -16,13 +16,13 @@ window.editTodo = editTodo;
 
 const body = document.querySelector("body")
 
-const mainDiv = createElementTemplate("div", null, "id", "main-div");
+const mainDiv = createElementTemplate("div", {id: "main-div"})
 
-const sidebarDiv = createElementTemplate("div", null, "id", "sidebar-div")
+const sidebarDiv = createElementTemplate("div", {id: "sidebar-div"})
 
-const projectsDiv = createElementTemplate("div", null, "class", "projects-div")
+const projectsDiv = createElementTemplate("div", {class: "projects-div"})
 
-const createProjectBtn = createElementTemplate("button", "Create a new project", "class", "create-project-btn")
+const createProjectBtn = createElementTemplate("button", {class: "create-project-btn"}, "Create a new project")
 createProjectBtn.addEventListener("click", createProjectDom)
 
 
@@ -39,21 +39,22 @@ function renderProject(){
     projectsArray.forEach(element => {
         const todoCount = element.todos.length;
 
-        const projectDiv = createElementTemplate("div", null, "class", "project-div")
+        const projectDiv = createElementTemplate("div", {class: "project-div"})
         projectDiv.dataset.id = element.id
         projectDiv.dataset.creationDate = element.creationDate;
 
-        const deleteProjectBtn = createElementTemplate("button", "Delete project")
-        const editProjectBtn = createElementTemplate("button", "Edit project")
-        const projectButtonsDiv = createElementTemplate("div", null, "class", "project-btns-div")
-        const todoCountElement = createElementTemplate("div", `${todoCount} Todos in this project`)   
+        const deleteProjectBtn = createElementTemplate("button", {class: "delete-project-btn"}, "Delete project")
+        const editProjectBtn = createElementTemplate("button", {command: "show-modal", commandfor: "project-edit-modal"}, "Edit project");
+        const projectButtonsDiv = createElementTemplate("div", {class: "project-btns-div"})
+        const todoCountElement = createElementTemplate("div", {class: "todo-count"}, `${todoCount} Todos in this project`)   
 
         for (const key in element) {
             if((key === "id") || (key === "todos")){
                 continue
             }
             else{
-                const projectDetailDiv = createElementTemplate("div", `${element[key]}`)
+                // const projectDetailDiv = createElementTemplate("div", `${element[key]}`)
+                const projectDetailDiv = createElementTemplate("div", {}, `${element[key]}`)
                 projectDiv.append(projectDetailDiv)
             }
         }
@@ -64,25 +65,51 @@ function renderProject(){
         projectButtonsDiv.append(editProjectBtn);
 
         deleteProjectBtn.addEventListener("click", deleteProjectDom)
+        editProjectBtn.addEventListener("click", editProjectDom)
         
     });
 }
 
-function createElementTemplate(elementType, text, attributeType, attributeName ){
-    const element = document.createElement(elementType);
+// function createElementTemplate(elementType, text, attributeType, attributeName ){
+//     const element = document.createElement(elementType);
+//     if(text){
+//         element.innerText = text
+//     }
+//     if(attributeName && attributeType){
+//         element.setAttribute(`${attributeType}`, `${attributeName}`)
+//     }
+//     return element
+// }
+
+function createElementTemplate(elementType, attributes, text){
+    const element = document.createElement(elementType)
+    for (const key in attributes) {       
+       element.setAttribute(key, attributes[key])
+    }
     if(text){
         element.innerText = text
-    }
-    if(attributeName && attributeType){
-        element.setAttribute(`${attributeType}`, `${attributeName}`)
     }
     return element
 }
 
 
-
 function createProjectDom(){
     createProject("DomTest", "DomTestDesc")
+}
+
+function editProjectDom(e){
+    const relevantProjectId = e.target.closest(".project-div").dataset.id
+    console.log(relevantProjectId)
+}
+
+function createProjectEditModal(){
+    const dialog = createElementTemplate("dialog", {id:"project-edit-modal", closedby: "any"})
+    
+    const modalMainDiv = createElementTemplate("div", {})
+    const form = createElementTemplate("form", {})
+
+    body.append(dialog)
+    dialog.append(modalMainDiv)
 }
 
 function deleteProjectDom(e){
@@ -91,3 +118,4 @@ function deleteProjectDom(e){
 }
 
 renderProject()
+createProjectEditModal()
