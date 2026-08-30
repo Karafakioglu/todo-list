@@ -33,6 +33,7 @@ body.append(sidebarDiv, mainDiv, createProjectModal("project-edit-modal", editPr
 mainDiv.append(projectsDiv,createProjectBtn)
 
 function renderProject(){
+    projectsDiv.innerHTML = ""
     projectsArray.forEach(element => {
         const todoCount = element.todos.length;
 
@@ -87,8 +88,8 @@ function createProjectDom(){
     const descInput = createProjectDom.querySelector("#description");
     
     createProject(titleInput.value, descInput.value)
-
     closeModal("project-new-modal")
+    renderProject()
 }
 
 function editProjectDom(e){
@@ -100,6 +101,7 @@ function editProjectDom(e){
     editProject(relevantProjectId, {title: titleInput.value, description: descInput.value})
 
     closeModal("project-edit-modal")
+    renderProject()
 }
 
 function createProjectModal(projectModalId, onConfirm){
@@ -168,6 +170,7 @@ function closeModal(modalType){
 function deleteProjectDom(e){
     const relevantProjectId = e.target.closest(".project-div").dataset.id
     deleteProject(relevantProjectId)
+    renderProject()
 }
 
 renderProject()
