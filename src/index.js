@@ -23,14 +23,13 @@ const sidebarDiv = createElementTemplate("div", {id: "sidebar-div"})
 const projectsDiv = createElementTemplate("div", {class: "projects-div"})
 
 const createProjectBtn = createElementTemplate("button", {class: "create-project-btn"}, "Create a new project")
-createProjectBtn.addEventListener("click", createProjectDom)
+
+createProjectBtn.addEventListener("click", () =>{
+    showModal("project-new-modal")
+})
 
 
-
-
-
-body.append(sidebarDiv, mainDiv, createProjectEditModal())
-
+body.append(sidebarDiv, mainDiv, createProjectModal("project-edit-modal", editProjectDom), createProjectModal("project-new-modal", createProjectDom))
 mainDiv.append(projectsDiv,createProjectBtn)
 
 function renderProject(){
@@ -61,7 +60,11 @@ function renderProject(){
         projectButtonsDiv.append(deleteProjectBtn,editProjectBtn);
 
         deleteProjectBtn.addEventListener("click", deleteProjectDom)
-        editProjectBtn.addEventListener("click", showModal)
+        editProjectBtn.addEventListener("click", (e) =>{
+            populateModal(e, "project-edit-modal")
+            showModal("project-edit-modal")
+            
+        })
         
     });
 }
@@ -79,63 +82,87 @@ function createElementTemplate(elementType, attributes, text){
 
 
 function createProjectDom(){
-    createProject("DomTest", "DomTestDesc")
+    const createProjectDom = document.getElementById("project-new-modal")
+    const titleInput = createProjectDom.querySelector("#id")
+    const descInput = createProjectDom.querySelector("#description");
+    
+    createProject(titleInput.value, descInput.value)
+
+    closeModal("project-new-modal")
 }
 
 function editProjectDom(e){
-    const relevantProjectId = e.target.closest("#project-edit-modal").dataset.id
+    const editProjectDom = document.getElementById("project-edit-modal")
+    const relevantProjectId = editProjectDom.dataset.id
 
-    const titleInput = document.getElementById("id")
-    const descInput = document.getElementById("description");
+    const titleInput = editProjectDom.querySelector("#id")
+    const descInput = editProjectDom.querySelector("#description");
     editProject(relevantProjectId, {title: titleInput.value, description: descInput.value})
 
-    closeModal()
+    closeModal("project-edit-modal")
 }
 
-function createProjectEditModal(e){
-    const editProjectModal = createElementTemplate("dialog", {id: "project-edit-modal"})
-    const closeEditProjectModalBtn = createElementTemplate("button" ,{}, "Close")
-    const confirmEditProjectModalBtn = createElementTemplate("button", {}, "Confirm")
-    const formElement = createElementTemplate("form", {action: "", method:"", class: "edit-project-form"})
-    const projectFormTitleDiv = createElementTemplate("div", {class: "project-edit-title-div"});
+function createProjectModal(projectModalId, onConfirm){
+    const projectModal = createElementTemplate("dialog", {id: projectModalId})
+
+    const formElement = createElementTemplate("form", {action: "", method:"", class: "project-form"})
+
+    const projectFormTitleDiv = createElementTemplate("div", {class: "project-title-div"});
     const titleLabel = createElementTemplate("label", {for: "title"},"Project title:")
     const titleInput = createElementTemplate("input", {type: "text", name:"id", id:"id"})
-    const projectFormDescDiv = createElementTemplate("div", {class: "project-edit-desc-div"});
+    titleInput.required = true
+
+    const projectFormDescDiv = createElementTemplate("div", {class: "project-desc-div"});
     const descLabel = createElementTemplate("label", {for: "description"}, "Project description:")
     const descInput = createElementTemplate("input", {type: "text", name:"description", id: "description"})
+    descInput.required = true
 
-    confirmEditProjectModalBtn.addEventListener("click", editProjectDom)
-    closeEditProjectModalBtn.addEventListener("click", closeModal)
+    const closeProjectModalBtn = createElementTemplate("button" ,{type: "button"}, "Close")
+    const confirmProjectModalBtn = createElementTemplate("button", {}, "Confirm")
+
+    formElement.addEventListener("submit", (e) =>{
+        e.preventDefault();
+        onConfirm()
+        formElement.reset()
+    })
+    closeProjectModalBtn.addEventListener("click", () =>{
+        closeModal(projectModalId)
+        formElement.reset()
+    })
 
 
-    editProjectModal.append(formElement,projectFormTitleDiv,projectFormDescDiv, closeEditProjectModalBtn, confirmEditProjectModalBtn)
+    projectModal.append(formElement)
     projectFormTitleDiv.append(titleLabel,titleInput)
     projectFormDescDiv.append(descLabel, descInput)
+    formElement.append(projectFormTitleDiv,projectFormDescDiv,closeProjectModalBtn,confirmProjectModalBtn)
+
 
     
-    return editProjectModal
+    return projectModal
 }
 
-function showModal(e){
-    const modal = document.getElementById("project-edit-modal");
+function showModal(modalType){
+    const modal = document.getElementById(modalType);
+    modal.showModal()
+}
+
+function populateModal(e, modalType){
+    const modal = document.getElementById(modalType);
     const relevantProjectId = e.target.closest(".project-div").dataset.id
     modal.dataset.id = relevantProjectId
     let matchingProject = projectsArray.find((project) => project.id === relevantProjectId)
 
-    const titleInput = document.getElementById("id")
+    const titleInput = modal.querySelector("input[name='id']")
     titleInput.value = matchingProject.title
 
-    const descInput = document.getElementById("description");
+    const descInput = modal.querySelector("input[name='description']")
     descInput.value = matchingProject.description
-
-    modal.showModal()
 }
 
-function closeModal(){
-    const modal = document.getElementById("project-edit-modal");
+function closeModal(modalType){
+    const modal = document.getElementById(modalType);
     delete modal.dataset.id
     modal.close()
-
 }
 
 function deleteProjectDom(e){
