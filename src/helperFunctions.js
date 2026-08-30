@@ -10,4 +10,14 @@ export function getCurrentDate(){
     return todaysDate
 }
 
+export function createElementTemplate(elementType, attributes, text){
+    const element = document.createElement(elementType)
+    for (const key in attributes) {       
+       element.setAttribute(key, attributes[key])
+    }
+    if(text){
+        element.innerText = text
+    }
+    return element
+}
 
