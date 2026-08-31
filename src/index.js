@@ -4,6 +4,7 @@ import { createProject, editProject, deleteProject, getProjects } from "./projec
 import { createTodo, deleteTodo, editTodo } from "./todoHandler.js";
 import * as projectDomHandler from "./projectDomHandler.js"
 import { renderTodos } from "./todoDomHandler.js";
+import { getOpenProjectId } from "./data.js";
 
 
 //testing purposes to use them in console.
@@ -15,3 +16,4 @@ window.editProject = editProject;
 window.createTodo = createTodo;
 window.deleteTodo = deleteTodo;
 window.editTodo = editTodo;
+window.getOpenProjectId = getOpenProjectId

@@ -21,3 +21,12 @@ export function createElementTemplate(elementType, attributes, text){
     return element
 }
 
+export function createFormField(name, labelText, type, isRequired){
+    const formTitle = createElementTemplate("div", {class: `${name}-div`});
+    const label = createElementTemplate("label", {for: name},`${labelText}:`)
+    const input = createElementTemplate("input", {type: type, name: name, id:name})
+    input.required = isRequired
+
+    formTitle.append(label,input)
+    return formTitle
+}

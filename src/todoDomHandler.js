@@ -1,9 +1,29 @@
 import { projectsArray, getOpenProjectId } from "./data.js";
-import { createElementTemplate } from "./helperFunctions.js";
+import { createElementTemplate, createFormField } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
 import { body, createProjectBtn, projectsDiv, mainDiv, todoDiv, projectsContainer, todoContainer, showProjectsContainer } from "./layout.js";
-import { deleteTodo } from "./todoHandler.js";
+import { deleteTodo, editTodo } from "./todoHandler.js";
 import { refreshProjectView } from "./projectDomHandler.js";
+
+body.append(createTodoModal("todo-edit-modal", editTodoDom))
+
+function editTodoDom(e){
+    const editTodoDom = document.getElementById("todo-edit-modal")
+    const relevantTodoId = editTodoDom.dataset.id
+
+    const titleInput = editTodoDom.querySelector("#title")
+    const descInput = editTodoDom.querySelector("#description");
+    const dueDateInput = editTodoDom.querySelector("#dueDate");
+    const statusInput = editTodoDom.querySelector("#status");
+    const priorityInput = editTodoDom.querySelector("#priority");
+    const notesInput = editTodoDom.querySelector("#notes")
+    editTodo(getOpenProjectId(), relevantTodoId, {title: titleInput.value, description: descInput.value, dueDate: dueDateInput.value, status: statusInput.value, priority: priorityInput.value, notes: notesInput.value })
+
+    closeModal("todo-edit-modal")
+    renderTodo(relevantTodoId)
+    refreshProjectView()
+}
+
 
 export function renderTodos(projectDiv){
     const matchingTodoCompactList = projectsDiv.querySelectorAll(".todos-compact-list")
@@ -51,10 +71,72 @@ todoContainer.addEventListener("click", (e) => {
         refreshProjectView()
 
     }
+    else if(e.target.closest(".edit-todo-btn")){
+        const todoId = todoContainer.querySelector(".todo-div").dataset.todoId
+        populateTodoModal(todoId, "todo-edit-modal")
+        showModal("todo-edit-modal")
+
+
+    }
 })
 
 function returnSelectedTodoItem(selectedTodoId){
     const project = projectsArray.find((project) => project.id === getOpenProjectId())
     const todo = project.todos.find((todo) => todo.id === selectedTodoId)
     return todo
+}
+
+function createTodoModal(todoModalId, onConfirm){
+    const todoModal = createElementTemplate("dialog", {id: todoModalId})
+    const formElement = createElementTemplate("form", {action: "", method:"", class: "todo-form"})
+
+    const todoFormTitleDiv = createFormField("title", "Title", "text", true)
+    const todoFormDescDiv = createFormField("description", "Description", "text", true);
+    const todoFormDueDateDiv = createFormField("dueDate", "Due Date", "date", false);
+    const todoFormStatusDiv = createFormField("status", "Status", "text", true);
+    const todoPriorityDiv = createFormField("priority", "Priority", "text", false);
+    const todoNotesDiv = createFormField("notes", "Notes", "text", false);
+
+
+    const closeTodoModalBtn = createElementTemplate("button" ,{type: "button"}, "Close")
+    const confirmTodoModalBtn = createElementTemplate("button", {}, "Confirm")
+
+    formElement.addEventListener("submit", (e) =>{
+        e.preventDefault();
+        onConfirm()
+        formElement.reset()
+    })
+    closeTodoModalBtn.addEventListener("click", () =>{
+        closeModal(todoModalId)
+        formElement.reset()
+    })
+
+    todoModal.append(formElement)
+    formElement.append(todoFormTitleDiv,todoFormDescDiv,todoFormDueDateDiv,todoFormStatusDiv,todoPriorityDiv,todoNotesDiv,closeTodoModalBtn,confirmTodoModalBtn)
+
+    return todoModal
+}
+
+function populateTodoModal(selectedTodoId, modalType){
+    const modal = document.getElementById(modalType);
+    modal.dataset.id = selectedTodoId
+    const matchingTodo = returnSelectedTodoItem(selectedTodoId)
+
+    const titleInput = modal.querySelector("input[name='title']")
+    titleInput.value = matchingTodo.title
+
+    const descInput = modal.querySelector("input[name='description']")
+    descInput.value = matchingTodo.description
+
+    const dueDateInput = modal.querySelector("input[name='dueDate']")
+    dueDateInput.value = matchingTodo.dueDate
+
+    const statusInput = modal.querySelector("input[name='status']")
+    statusInput.value = matchingTodo.status
+
+    const priorityInput = modal.querySelector("input[name='priority']")
+    priorityInput.value = matchingTodo.priority
+
+    const notesInput = modal.querySelector("input[name='notes']")
+    notesInput.value = matchingTodo.notes
 }

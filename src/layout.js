@@ -14,6 +14,7 @@ export const createProjectBtn = createElementTemplate("button", {class: "create-
 
 export const backToProjectBtn = createElementTemplate("button", {class: "back-to-project-btn"}, "Back")
 export const deleteTodoBtn = createElementTemplate("button", {class: "delete-todo-btn"}, "Delete")
+export const editTodoBtn = createElementTemplate("button", {class: "edit-todo-btn"}, "Edit")
 
 export const todoContainer = createElementTemplate("div", {class: "todo-container"})
 
@@ -23,7 +24,7 @@ todoContainer.style.display = "none"
 body.append(sidebarDiv, mainDiv)
 mainDiv.append(projectsContainer,todoContainer)
 projectsContainer.append(projectsDiv,createProjectBtn)
-todoContainer.append(todoDiv, backToProjectBtn, deleteTodoBtn)
+todoContainer.append(todoDiv, backToProjectBtn, deleteTodoBtn,editTodoBtn)
 
 export function showProjectsContainer(){
     projectsContainer.style.display = "block"
