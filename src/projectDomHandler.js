@@ -2,7 +2,7 @@ import { projectsArray } from "./data.js";
 import { createProject, editProject, deleteProject, getProjects } from "./projectHandler.js";
 import { createElementTemplate } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
-import { body, createProjectBtn, projectsDiv, todoDiv, projectsContainer, todoContainer } from "./layout.js";
+import { body, createProjectBtn, projectsDiv, todoDiv, projectsContainer, todoContainer, showTodoContainer} from "./layout.js";
 import { getOpenProjectId, setOpenProjectId } from "./data.js";
 import { renderTodos, renderTodo } from "./todoDomHandler.js";
 
@@ -31,8 +31,7 @@ projectsDiv.addEventListener("click", (e) => {
 
         renderTodo(selectedCompactTodoId)
 
-        projectsContainer.style.display = "none"
-        todoContainer.style.display = "block"
+        showTodoContainer()
 
     }
     else if(e.target.closest(".project-div")) {
@@ -101,6 +100,11 @@ function editProjectDom(e){
     editProject(relevantProjectId, {title: titleInput.value, description: descInput.value})
 
     closeModal("project-edit-modal")
+    refreshProjectView()
+    
+}
+
+export function refreshProjectView(){
     renderProject()
     const openId = getOpenProjectId()
     if(openId){

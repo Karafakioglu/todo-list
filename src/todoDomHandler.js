@@ -1,7 +1,9 @@
 import { projectsArray, getOpenProjectId } from "./data.js";
 import { createElementTemplate } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
-import { body, createProjectBtn, projectsDiv, mainDiv, todoDiv, projectsContainer, todoContainer } from "./layout.js";
+import { body, createProjectBtn, projectsDiv, mainDiv, todoDiv, projectsContainer, todoContainer, showProjectsContainer } from "./layout.js";
+import { deleteTodo } from "./todoHandler.js";
+import { refreshProjectView } from "./projectDomHandler.js";
 
 export function renderTodos(projectDiv){
     const matchingTodoCompactList = projectsDiv.querySelectorAll(".todos-compact-list")
@@ -26,23 +28,33 @@ export function renderTodos(projectDiv){
 
 export function renderTodo(selectedTodoId){
     todoDiv.innerHTML = ""
-    projectsArray.forEach((project) => {
-        const selectedProjectTodo = project.todos.find((todo) => todo.id === selectedTodoId)
-        for (const key in selectedProjectTodo) {
+    todoDiv.dataset.todoId = selectedTodoId
+    const selectedTodo = returnSelectedTodoItem(selectedTodoId)
+        for (const key in selectedTodo) {
             if(key === "id"){
                 continue
             }else{
-                const todoInfo = createElementTemplate("p", {}, selectedProjectTodo[key])
+                const todoInfo = createElementTemplate("p", {}, selectedTodo[key])
                 todoDiv.append(todoInfo)
-                // console.log(selectedProjectTodo[key])
             }
         }
-    })
 }
 
 todoContainer.addEventListener("click", (e) => {
     if(e.target.closest(".back-to-project-btn")){
-        projectsContainer.style.display = "block"
-        todoContainer.style.display = "none"
+        showProjectsContainer()
+    }
+    else if(e.target.closest(".delete-todo-btn")){
+        const todoId = todoContainer.querySelector(".todo-div").dataset.todoId
+        deleteTodo(getOpenProjectId(), todoId)
+        showProjectsContainer()
+        refreshProjectView()
+
     }
 })
+
+function returnSelectedTodoItem(selectedTodoId){
+    const project = projectsArray.find((project) => project.id === getOpenProjectId())
+    const todo = project.todos.find((todo) => todo.id === selectedTodoId)
+    return todo
+}
