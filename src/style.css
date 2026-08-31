@@ -237,3 +237,30 @@ body {
     width: 30%;
     background-color: black;
 }
+
+/* --- DEBUG --- */
+.project-div {
+    border: 2px solid blue;
+    margin: 8px;
+    padding: 8px;
+    background-color: white;
+}
+
+.todos-compact-list {
+    border: 2px dashed green;
+    margin-top: 8px;
+    padding: 8px;
+    background-color: #eee;
+}
+
+.todo-compact {
+    border: 1px solid orange;
+    margin: 4px;
+    padding: 4px;
+    background-color: white;
+}
+
+.todo-compact p {
+    margin: 2px 0;
+    font-size: 12px;
+}

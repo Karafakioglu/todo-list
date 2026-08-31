@@ -2,9 +2,9 @@ import { projectsArray } from "./data.js";
 import { createProject, editProject, deleteProject, getProjects } from "./projectHandler.js";
 import { createElementTemplate } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
-import { body, createProjectBtn, projectsDiv } from "./layout.js";
+import { body, createProjectBtn, projectsDiv, todoDiv, projectsContainer, todoContainer } from "./layout.js";
 import { getOpenProjectId, setOpenProjectId } from "./data.js";
-import { renderTodos } from "./todoDomHandler.js";
+import { renderTodos, renderTodo } from "./todoDomHandler.js";
 
 createProjectBtn.addEventListener("click", () =>{
     showModal("project-new-modal")
@@ -12,23 +12,40 @@ createProjectBtn.addEventListener("click", () =>{
 
 body.append(createProjectModal("project-edit-modal", editProjectDom), createProjectModal("project-new-modal", createProjectDom))
 
-projectsDiv.addEventListener("click", (e)=>{
-    if(e.target.closest(".edit-project-btn")){
+projectsDiv.addEventListener("click", (e) => {
+    if(e.target.closest(".edit-project-btn")) {
         populateModal(e, "project-edit-modal")
         showModal("project-edit-modal")
+        console.log(e.target.closest(".edit-project-btn"))
     }
-    else if(e.target.closest(".delete-project-btn")){
+    else if(e.target.closest(".delete-project-btn")) {
         deleteProjectDom(e)
         setOpenProjectId(null)
-    }else if(e.target.closest(".project-div")){
+        console.log(e.target.closest(".delete-project-btn"))
+
+    }
+    else if(e.target.closest(".todo-compact")) {
+        const todoCompact = e.target.closest(".todo-compact")
+        const selectedCompactTodoId = todoCompact.dataset.todoId
+        // console.log(selectedCompactTodoId)
+
+        renderTodo(selectedCompactTodoId)
+
+        projectsContainer.style.display = "none"
+        todoContainer.style.display = "block"
+
+    }
+    else if(e.target.closest(".project-div")) {
         const project = e.target.closest(".project-div")
-        
-        if(project.dataset.id === getOpenProjectId()){
+        console.log(e.target.closest(".project-div"))
+
+
+        if(project.dataset.id === getOpenProjectId()) {
             project.querySelector(".todos-compact-list").remove()
             setOpenProjectId(null)
-        }else{
-        setOpenProjectId(project.dataset.id)
-        renderTodos(project)
+        } else{
+            setOpenProjectId(project.dataset.id)
+            renderTodos(project)
         }
     }
 })
