@@ -3,6 +3,8 @@ import { createProject, editProject, deleteProject, getProjects } from "./projec
 import { createElementTemplate } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
 import { body, createProjectBtn, projectsDiv } from "./layout.js";
+import { getOpenProjectId, setOpenProjectId } from "./data.js";
+import { renderTodos } from "./todoDomHandler.js";
 
 createProjectBtn.addEventListener("click", () =>{
     showModal("project-new-modal")
@@ -17,8 +19,18 @@ projectsDiv.addEventListener("click", (e)=>{
     }
     else if(e.target.closest(".delete-project-btn")){
         deleteProjectDom(e)
+        setOpenProjectId(null)
+    }else if(e.target.closest(".project-div")){
+        const project = e.target.closest(".project-div")
+        
+        if(project.dataset.id === getOpenProjectId()){
+            project.querySelector(".todos-compact-list").remove()
+            setOpenProjectId(null)
+        }else{
+        setOpenProjectId(project.dataset.id)
+        renderTodos(project)
+        }
     }
-    
 })
 
 
@@ -73,6 +85,11 @@ function editProjectDom(e){
 
     closeModal("project-edit-modal")
     renderProject()
+    const openId = getOpenProjectId()
+    if(openId){
+        const div = projectsDiv.querySelector(`[data-id="${openId}"]`)
+        renderTodos(div)
+    }
 }
 
 function createProjectModal(projectModalId, onConfirm){

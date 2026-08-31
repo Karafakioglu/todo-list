@@ -73,3 +73,5 @@ const testTodo1 = new Todo("testTodo1", "testTodo1 desc", "testTodo1 Date 20.05.
 
 projectsArray[0].todos.push(defaultTodo)
 projectsArray[0].todos.push(testTodo1)
+
+projectsArray[1].todos.push(defaultTodo)

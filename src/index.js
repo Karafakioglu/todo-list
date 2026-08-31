@@ -3,6 +3,7 @@ import { projectsArray } from "./data.js";
 import { createProject, editProject, deleteProject, getProjects } from "./projectHandler.js";
 import { createTodo, deleteTodo, editTodo } from "./todoHandler.js";
 import * as projectDomHandler from "./projectDomHandler.js"
+import { renderTodos } from "./todoDomHandler.js";
 
 
 //testing purposes to use them in console.
@@ -14,4 +15,3 @@ window.editProject = editProject;
 window.createTodo = createTodo;
 window.deleteTodo = deleteTodo;
 window.editTodo = editTodo;
-
