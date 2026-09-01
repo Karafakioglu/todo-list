@@ -2,15 +2,15 @@ import { projectsArray } from "./data.js";
 import * as helperFunctions from "./helperFunctions.js";
 
 export class Todo {
-    constructor(title, description, dueDate, status, priority, notes){
+    constructor(title, description, dueDate, status, priority, notes, id = helperFunctions.createRandomId(), creationDate = helperFunctions.getCurrentDate()){
         this.title = title;
         this.description = description;
-        this.id = helperFunctions.createRandomId()
+        this.id = id
         this.dueDate = dueDate;
         this.status = status;
         this.priority = priority;
         this.notes = notes;
-        this.creationDate = helperFunctions.getCurrentDate()
+        this.creationDate = creationDate
     }
 
     editTodo(updates){

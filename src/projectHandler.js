@@ -3,12 +3,12 @@ import * as helperFunctions from "./helperFunctions.js";
 import { Todo } from "./todoHandler.js";
 
 export class Project {
-    constructor(title, description){
+    constructor(title, description, id = helperFunctions.createRandomId(), creationDate = helperFunctions.getCurrentDate()){
         this.title = title;
         this.description = description;
-        this.id = helperFunctions.createRandomId()
+        this.id = id
         this.todos = [];
-        this.creationDate = helperFunctions.getCurrentDate();
+        this.creationDate = creationDate;
     }
 
     deleteTodo(todoId){
@@ -73,8 +73,9 @@ export function deleteProject(projectId){
 export function getProjects(){
     if(projectsArray.length !== 0){
         console.table(projectsArray)
+        return projectsArray
         projectsArray.forEach(element => {
-            console.log(element.todos)
+            // console.log(element.todos)
         });
     }else{
         console.log("No project!")

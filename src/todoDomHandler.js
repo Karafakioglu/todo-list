@@ -1,4 +1,4 @@
-import { projectsArray, getOpenProjectId } from "./data.js";
+import { projectsArray, getOpenProjectId, saveProjects } from "./data.js";
 import { createElementTemplate, createFormField } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
 import { body, projectsDiv, mainDiv, todoDiv, todoContainer, showProjectsContainer } from "./layout.js";
@@ -22,6 +22,7 @@ function editTodoDom(e){
     returnSelectedTodoItem(relevantTodoId).editTodo({title: titleInput.value, description: descInput.value, dueDate: dueDateInput.value, status: statusInput.value, priority: priorityInput.value, notes: notesInput.value })
 
     closeModal("todo-edit-modal")
+    saveProjects()
     renderTodo(relevantTodoId)
     refreshProjectView()
 }
@@ -40,6 +41,7 @@ function createTodoDom(e){
     project.createTodo(titleInput.value,descInput.value,dueDateInput.value,statusInput.value,priorityInput.value,notesInput.value)
 
     closeModal("todo-new-modal");
+    saveProjects()
     refreshProjectView()
 }
 
@@ -91,6 +93,7 @@ todoContainer.addEventListener("click", (e) => {
         const project = projectsArray.find((project) => project.id === getOpenProjectId())
 
         project.deleteTodo(todoId)
+        saveProjects()
         showProjectsContainer()
         refreshProjectView()
 

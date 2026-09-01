@@ -1,4 +1,4 @@
-import { projectsArray } from "./data.js";
+import { projectsArray, saveProjects } from "./data.js";
 import { createProject, editProject, deleteProject, getProjects } from "./projectHandler.js";
 import { createElementTemplate } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
@@ -89,6 +89,7 @@ function createProjectDom(){
     
     createProject(titleInput.value, descInput.value)
     closeModal("project-new-modal")
+    saveProjects()
     renderProject()
 }
 
@@ -104,6 +105,7 @@ function editProjectDom(e){
     project.editProject({title: titleInput.value, description: descInput.value})
 
     closeModal("project-edit-modal")
+    saveProjects()
     refreshProjectView()
     
 }
@@ -171,7 +173,6 @@ function populateModal(e, modalType){
 function deleteProjectDom(e){
     const relevantProjectId = e.target.closest(".project-div").dataset.id
     deleteProject(relevantProjectId)
+    saveProjects()
     renderProject()
 }
-
-renderProject()
