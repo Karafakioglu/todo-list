@@ -24,13 +24,14 @@ projectsDiv.addEventListener("click", (e) => {
         console.log(e.target.closest(".delete-project-btn"))
 
     }
+    else if(e.target.closest(".add-todo-btn")){
+        showModal("todo-new-modal")
+    }
     else if(e.target.closest(".todo-compact")) {
         const todoCompact = e.target.closest(".todo-compact")
         const selectedCompactTodoId = todoCompact.dataset.todoId
-        // console.log(selectedCompactTodoId)
 
         renderTodo(selectedCompactTodoId)
-
         showTodoContainer()
 
     }
@@ -50,7 +51,7 @@ projectsDiv.addEventListener("click", (e) => {
 })
 
 
-function renderProject(){
+export function renderProject(){
     projectsDiv.innerHTML = ""
     projectsArray.forEach(element => {
         const todoCount = element.todos.length;
@@ -92,12 +93,15 @@ function createProjectDom(){
 }
 
 function editProjectDom(e){
+    
     const editProjectDom = document.getElementById("project-edit-modal")
-    const relevantProjectId = editProjectDom.dataset.id
+    // const relevantProjectId = editProjectDom.dataset.id
+    const project = projectsArray.find((project) => project.id === editProjectDom.dataset.id)
 
     const titleInput = editProjectDom.querySelector("#id")
     const descInput = editProjectDom.querySelector("#description");
-    editProject(relevantProjectId, {title: titleInput.value, description: descInput.value})
+    // editProject(relevantProjectId, {title: titleInput.value, description: descInput.value})
+    project.editProject({title: titleInput.value, description: descInput.value})
 
     closeModal("project-edit-modal")
     refreshProjectView()

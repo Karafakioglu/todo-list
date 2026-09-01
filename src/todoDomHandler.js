@@ -1,11 +1,12 @@
 import { projectsArray, getOpenProjectId } from "./data.js";
 import { createElementTemplate, createFormField } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
-import { body, createProjectBtn, projectsDiv, mainDiv, todoDiv, projectsContainer, todoContainer, showProjectsContainer } from "./layout.js";
-import { deleteTodo, editTodo } from "./todoHandler.js";
+import { body, projectsDiv, mainDiv, todoDiv, todoContainer, showProjectsContainer } from "./layout.js";
+import { Todo } from "./todoHandler.js";
 import { refreshProjectView } from "./projectDomHandler.js";
 
-body.append(createTodoModal("todo-edit-modal", editTodoDom))
+
+body.append(createTodoModal("todo-edit-modal", editTodoDom), createTodoModal("todo-new-modal", createTodoDom))
 
 function editTodoDom(e){
     const editTodoDom = document.getElementById("todo-edit-modal")
@@ -17,21 +18,42 @@ function editTodoDom(e){
     const statusInput = editTodoDom.querySelector("#status");
     const priorityInput = editTodoDom.querySelector("#priority");
     const notesInput = editTodoDom.querySelector("#notes")
-    editTodo(getOpenProjectId(), relevantTodoId, {title: titleInput.value, description: descInput.value, dueDate: dueDateInput.value, status: statusInput.value, priority: priorityInput.value, notes: notesInput.value })
+    // editTodo(getOpenProjectId(), relevantTodoId, {title: titleInput.value, description: descInput.value, dueDate: dueDateInput.value, status: statusInput.value, priority: priorityInput.value, notes: notesInput.value })
+    returnSelectedTodoItem(relevantTodoId).editTodo({title: titleInput.value, description: descInput.value, dueDate: dueDateInput.value, status: statusInput.value, priority: priorityInput.value, notes: notesInput.value })
 
     closeModal("todo-edit-modal")
     renderTodo(relevantTodoId)
     refreshProjectView()
 }
 
+function createTodoDom(e){
+    const createTodoDom = document.getElementById("todo-new-modal");
+    const project = projectsArray.find((project) => project.id === getOpenProjectId())
+
+
+    const titleInput = createTodoDom.querySelector("#title")
+    const descInput = createTodoDom.querySelector("#description");
+    const dueDateInput = createTodoDom.querySelector("#dueDate");
+    const statusInput = createTodoDom.querySelector("#status");
+    const priorityInput = createTodoDom.querySelector("#priority");
+    const notesInput = createTodoDom.querySelector("#notes")
+    project.createTodo(titleInput.value,descInput.value,dueDateInput.value,statusInput.value,priorityInput.value,notesInput.value)
+
+    closeModal("todo-new-modal");
+    refreshProjectView()
+}
+
 
 export function renderTodos(projectDiv){
     const matchingTodoCompactList = projectsDiv.querySelectorAll(".todos-compact-list")
+    
     matchingTodoCompactList.forEach(elem => {
         elem.remove()
     })
     const todosCompactList = createElementTemplate("div", {class: "todos-compact-list"})
     projectDiv.append(todosCompactList)
+    const addTodoButton = createElementTemplate("button", {class: "add-todo-btn"}, "Add todo")
+    todosCompactList.append(addTodoButton)
     const matchingProject = projectsArray.find((project) => project.id === getOpenProjectId())
     if(matchingProject){
         matchingProject.todos.forEach(todo => {
@@ -66,7 +88,9 @@ todoContainer.addEventListener("click", (e) => {
     }
     else if(e.target.closest(".delete-todo-btn")){
         const todoId = todoContainer.querySelector(".todo-div").dataset.todoId
-        deleteTodo(getOpenProjectId(), todoId)
+        const project = projectsArray.find((project) => project.id === getOpenProjectId())
+
+        project.deleteTodo(todoId)
         showProjectsContainer()
         refreshProjectView()
 
@@ -75,10 +99,10 @@ todoContainer.addEventListener("click", (e) => {
         const todoId = todoContainer.querySelector(".todo-div").dataset.todoId
         populateTodoModal(todoId, "todo-edit-modal")
         showModal("todo-edit-modal")
-
-
     }
 })
+
+
 
 function returnSelectedTodoItem(selectedTodoId){
     const project = projectsArray.find((project) => project.id === getOpenProjectId())

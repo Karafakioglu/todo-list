@@ -1,7 +1,8 @@
 import { projectsArray } from "./data.js";
 import * as helperFunctions from "./helperFunctions.js";
+import { Todo } from "./todoHandler.js";
 
-class Project {
+export class Project {
     constructor(title, description){
         this.title = title;
         this.description = description;
@@ -9,6 +10,31 @@ class Project {
         this.todos = [];
         this.creationDate = helperFunctions.getCurrentDate();
     }
+
+    deleteTodo(todoId){
+        const index = this.todos.findIndex((todo) => todo.id === todoId)
+        if(index !== -1){
+            console.log("deleting todo")
+            this.todos.splice(index,1)
+        }
+        else{
+            console.log("No todo")
+        }
+    }
+
+    createTodo(title, description, dueDate, status, priority, notes){
+        this.todos.push(new Todo(title, description, dueDate, status, priority, notes))
+    }
+
+    editProject(updates){
+        const forbiddenKeys = ["id", "creationDate", "todos"]
+        for (const updateKey in updates){
+                if(forbiddenKeys.includes(updateKey)){
+                    continue
+                }
+                this[updateKey] = updates[updateKey]
+            }
+        }
 }
 
 export function createProject(title, description){
@@ -16,22 +42,22 @@ export function createProject(title, description){
     projectsArray.push(new Project(title, description))
 }
 
-export function editProject(projectId, updates){
-    const forbiddenKeys = ["id", "creationDate", "todos"]
-    const project = projectsArray.find((project) => project.id === projectId)
+// export function editProject(projectId, updates){
+//     const forbiddenKeys = ["id", "creationDate", "todos"]
+//     const project = projectsArray.find((project) => project.id === projectId)
 
-    if(!project){
-        console.log("No project")
-        return
-    }else{
-        for (const updateKey in updates){
-            if(forbiddenKeys.includes(updateKey)){
-                continue
-            }
-            project[updateKey] = updates[updateKey]
-        }
-    }
-}
+//     if(!project){
+//         console.log("No project")
+//         return
+//     }else{
+//         for (const updateKey in updates){
+//             if(forbiddenKeys.includes(updateKey)){
+//                 continue
+//             }
+//             project[updateKey] = updates[updateKey]
+//         }
+//     }
+// }
 
 export function deleteProject(projectId){
     const index = projectsArray.findIndex((element) => element.id === projectId)
@@ -54,10 +80,3 @@ export function getProjects(){
         console.log("No project!")
     }
 }
-
-
-const defaultProject = new Project("Default Project", "This is a default project");
-const secondProject = new Project("Some title", "Some description")
-
-projectsArray.push(defaultProject);
-projectsArray.push(secondProject)
