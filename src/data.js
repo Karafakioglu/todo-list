@@ -1,8 +1,10 @@
 export const projectsArray = []
 import { Todo } from "./todoHandler.js";
 import { Project } from "./projectHandler.js";
+import { showProjectsContainer } from "./layout.js";
 
 let openProjectId = null;
+let sectionToReturn = showProjectsContainer
 
 export function getOpenProjectId(){
     return openProjectId
@@ -10,6 +12,14 @@ export function getOpenProjectId(){
 
 export function setOpenProjectId(id){
     openProjectId = id
+}
+
+export function getSectionToReturn(){
+    return sectionToReturn
+}
+
+export function setSectionToReturn(section){
+    sectionToReturn = section
 }
 
 export function saveProjects(){

@@ -1,8 +1,8 @@
-import { projectsArray, saveProjects } from "./data.js";
+import { projectsArray, saveProjects, setSectionToReturn } from "./data.js";
 import { createProject, editProject, deleteProject, getProjects } from "./projectHandler.js";
 import { createElementTemplate } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
-import { body, createProjectBtn, projectsDiv, todoDiv, projectsContainer, todoContainer, showTodoContainer} from "./layout.js";
+import { body, createProjectBtn, projectsDiv, todoDiv, projectsContainer, todoContainer, showTodoContainer, showTodosContainer, showProjectsContainer} from "./layout.js";
 import { getOpenProjectId, setOpenProjectId } from "./data.js";
 import { renderTodos, renderTodo } from "./todoDomHandler.js";
 
@@ -33,6 +33,7 @@ projectsDiv.addEventListener("click", (e) => {
 
         renderTodo(selectedCompactTodoId)
         showTodoContainer()
+        setSectionToReturn(showProjectsContainer)
 
     }
     else if(e.target.closest(".project-div")) {

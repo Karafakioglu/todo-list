@@ -5,6 +5,7 @@ import { Todo } from "./todoHandler.js";
 import * as projectDomHandler from "./projectDomHandler.js"
 import { getOpenProjectId } from "./data.js";
 import { saveProjects, loadProjects } from "./data.js";
+import * as sidebarDomHandler from "./sidebarDomHandler.js"
 
 
 //testing purposes to use them in console.

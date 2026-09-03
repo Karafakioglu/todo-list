@@ -1,7 +1,7 @@
-import { projectsArray, getOpenProjectId, saveProjects } from "./data.js";
+import { projectsArray, getOpenProjectId, saveProjects, setSectionToReturn, getSectionToReturn } from "./data.js";
 import { createElementTemplate, createFormField, createSelectField } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
-import { body, projectsDiv, mainDiv, todoDiv, todoContainer, showProjectsContainer } from "./layout.js";
+import { body, projectsDiv, mainDiv, todoDiv, todoContainer, showProjectsContainer, todosContainer, showTodoContainer, showTodosContainer } from "./layout.js";
 import { Todo } from "./todoHandler.js";
 import { refreshProjectView } from "./projectDomHandler.js";
 
@@ -25,6 +25,8 @@ function editTodoDom(e){
     saveProjects()
     renderTodo(relevantTodoId)
     refreshProjectView()
+    renderAllTodos()
+
 }
 
 function createTodoDom(e){
@@ -43,6 +45,7 @@ function createTodoDom(e){
     closeModal("todo-new-modal");
     saveProjects()
     refreshProjectView()
+    renderAllTodos()
 }
 
 
@@ -84,18 +87,45 @@ export function renderTodo(selectedTodoId){
         }
 }
 
+
+export function renderAllTodos(){
+    const matchingTodoCompactList = todosContainer.querySelectorAll(".todos-div-compact")
+
+    matchingTodoCompactList.forEach(elem => {
+        elem.remove()
+    })
+    projectsArray.forEach((project) => {
+
+        const projectTodos = project.todos
+
+        projectTodos.forEach((todo) => {
+
+            const todoDiv = createElementTemplate("div", {class: "todos-div-compact", "data-todo-id": `${todo.id}`})
+
+            const todoTitle = createElementTemplate("p", {}, todo.title)
+            const todoDesc = createElementTemplate("p", {}, todo.description)
+            const todoCreationDate = createElementTemplate("p", {}, todo.creationDate)
+            const todoPriority = createElementTemplate("p", {}, todo.priority)
+            todoDiv.append(todoTitle,todoDesc,todoCreationDate,todoPriority)
+            todosContainer.append(todoDiv)
+        })
+    })
+}
+
 todoContainer.addEventListener("click", (e) => {
     if(e.target.closest(".back-to-project-btn")){
-        showProjectsContainer()
+        getSectionToReturn()()
     }
     else if(e.target.closest(".delete-todo-btn")){
         const todoId = todoContainer.querySelector(".todo-div").dataset.todoId
-        const project = projectsArray.find((project) => project.id === getOpenProjectId())
+        const project = returnSelectedProjectItem(todoId)
 
         project.deleteTodo(todoId)
         saveProjects()
-        showProjectsContainer()
+        // showProjectsContainer()
+        getSectionToReturn()()
         refreshProjectView()
+        renderAllTodos()
 
     }
     else if(e.target.closest(".edit-todo-btn")){
@@ -105,12 +135,30 @@ todoContainer.addEventListener("click", (e) => {
     }
 })
 
+todosContainer.addEventListener("click", (e)=>{
+    
+    if(e.target.closest(".todos-div-compact")){
+        const selectedTodoId = e.target.closest(".todos-div-compact").dataset.todoId
+        renderTodo(selectedTodoId)
+        showTodoContainer()
+        setSectionToReturn(showTodosContainer)
+    }
+})
 
+
+
+// function returnSelectedTodoItem(selectedTodoId){
+    // const project = projectsArray.find((project) => project.id === getOpenProjectId())
+    // const todo = project.todos.find((todo) => todo.id === selectedTodoId)
+    // return todo
+// }
 
 function returnSelectedTodoItem(selectedTodoId){
-    const project = projectsArray.find((project) => project.id === getOpenProjectId())
-    const todo = project.todos.find((todo) => todo.id === selectedTodoId)
-    return todo
+    return projectsArray.flatMap(project => project.todos).find(todo => todo.id === selectedTodoId)
+}
+
+function returnSelectedProjectItem(selectedTodoId){
+    return projectsArray.find(project => project.todos.some(todo => todo.id === selectedTodoId))
 }
 
 function createTodoModal(todoModalId, onConfirm){
@@ -167,3 +215,4 @@ function populateTodoModal(selectedTodoId, modalType){
     const notesInput = modal.querySelector("input[name='notes']")
     notesInput.value = matchingTodo.notes
 }
+
