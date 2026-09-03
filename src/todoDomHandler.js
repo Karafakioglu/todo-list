@@ -1,5 +1,5 @@
 import { projectsArray, getOpenProjectId, saveProjects } from "./data.js";
-import { createElementTemplate, createFormField } from "./helperFunctions.js";
+import { createElementTemplate, createFormField, createSelectField } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
 import { body, projectsDiv, mainDiv, todoDiv, todoContainer, showProjectsContainer } from "./layout.js";
 import { Todo } from "./todoHandler.js";
@@ -120,8 +120,8 @@ function createTodoModal(todoModalId, onConfirm){
     const todoFormTitleDiv = createFormField("title", "Title", "text", true)
     const todoFormDescDiv = createFormField("description", "Description", "text", true);
     const todoFormDueDateDiv = createFormField("dueDate", "Due Date", "date", false);
-    const todoFormStatusDiv = createFormField("status", "Status", "text", true);
-    const todoPriorityDiv = createFormField("priority", "Priority", "text", false);
+    const todoFormStatusDiv = createSelectField("status", "Select a status", ["done", "in-progress", "not-started"])
+    const todoPriorityDiv = createSelectField("priority", "Select a priority", ["high", "medium", "low"])
     const todoNotesDiv = createFormField("notes", "Notes", "text", false);
 
 
@@ -158,10 +158,10 @@ function populateTodoModal(selectedTodoId, modalType){
     const dueDateInput = modal.querySelector("input[name='dueDate']")
     dueDateInput.value = matchingTodo.dueDate
 
-    const statusInput = modal.querySelector("input[name='status']")
+    const statusInput = modal.querySelector("select[name='status']")
     statusInput.value = matchingTodo.status
 
-    const priorityInput = modal.querySelector("input[name='priority']")
+    const priorityInput = modal.querySelector("select[name='priority']")
     priorityInput.value = matchingTodo.priority
 
     const notesInput = modal.querySelector("input[name='notes']")
