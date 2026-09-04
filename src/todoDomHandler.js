@@ -178,6 +178,36 @@ export function renderUpcomingTodos(){
     })
 }
 
+export function renderDoneTodos(){
+    const matchingTodoCompactList = todosContainer.querySelectorAll(".todos-div-compact")
+
+    matchingTodoCompactList.forEach((elem) => {
+        elem.remove()
+    })
+    projectsArray.forEach(project =>{
+        const projectTodos = project.todos
+
+        projectTodos.forEach((todo) =>{
+
+            if(todo.status === "done"){
+                const todoDiv = createElementTemplate("div", {class: "todos-div-compact", "data-todo-id": `${todo.id}`})
+
+                const todoTitle = createElementTemplate("p", {}, todo.title)
+                const todoDesc = createElementTemplate("p", {}, todo.description)
+                const todoCreationDate = createElementTemplate("p", {}, todo.creationDate)
+                const dueDate = createElementTemplate("p", {}, todo.dueDate)
+                const todoPriority = createElementTemplate("p", {}, todo.priority)
+                
+                todoDiv.append(todoTitle,todoDesc,todoCreationDate,dueDate,todoPriority)
+                todosContainer.append(todoDiv)
+            }
+
+
+        })
+
+    })
+}
+
 todoContainer.addEventListener("click", (e) => {
     if(e.target.closest(".back-to-project-btn")){
         getSectionToReturn()()

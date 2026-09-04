@@ -1,5 +1,5 @@
 import { sidebarDiv, showTodosContainer } from "./layout.js";
-import { renderAllTodos, renderDueTodos, renderUpcomingTodos } from "./todoDomHandler.js";
+import { renderAllTodos, renderDueTodos, renderUpcomingTodos, renderDoneTodos } from "./todoDomHandler.js";
 
 sidebarDiv.addEventListener("click", (e) =>{
     if(e.target.closest("#all-todos-div")){
@@ -19,7 +19,10 @@ sidebarDiv.addEventListener("click", (e) =>{
         renderUpcomingTodos()
 
     }else if(e.target.closest("#finished-todos-div")){
-        console.log("Finished todos")
+        // console.log("Finished todos")
+
+        showTodosContainer()
+        renderDoneTodos()
     }
 
 })
