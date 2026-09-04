@@ -1,9 +1,10 @@
 import { projectsArray, getOpenProjectId, saveProjects, setSectionToReturn, getSectionToReturn } from "./data.js";
-import { createElementTemplate, createFormField, createSelectField } from "./helperFunctions.js";
+import { createElementTemplate, createFormField, createSelectField, getCurrentDate } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
 import { body, projectsDiv, mainDiv, todoDiv, todoContainer, showProjectsContainer, todosContainer, showTodoContainer, showTodosContainer } from "./layout.js";
 import { Todo } from "./todoHandler.js";
 import { refreshProjectView } from "./projectDomHandler.js";
+import { differenceInDays, parse, startOfToday } from "date-fns";
 
 
 body.append(createTodoModal("todo-edit-modal", editTodoDom), createTodoModal("todo-new-modal", createTodoDom))
@@ -52,7 +53,7 @@ function createTodoDom(e){
 export function renderTodos(projectDiv){
     const matchingTodoCompactList = projectsDiv.querySelectorAll(".todos-compact-list")
     
-    matchingTodoCompactList.forEach(elem => {
+    matchingTodoCompactList.forEach((elem) => {
         elem.remove()
     })
     const todosCompactList = createElementTemplate("div", {class: "todos-compact-list"})
@@ -91,7 +92,7 @@ export function renderTodo(selectedTodoId){
 export function renderAllTodos(){
     const matchingTodoCompactList = todosContainer.querySelectorAll(".todos-div-compact")
 
-    matchingTodoCompactList.forEach(elem => {
+    matchingTodoCompactList.forEach((elem) => {
         elem.remove()
     })
     projectsArray.forEach((project) => {
@@ -110,6 +111,39 @@ export function renderAllTodos(){
             todosContainer.append(todoDiv)
         })
     })
+}
+
+export function renderDueTodos(){
+    const matchingTodoCompactList = todosContainer.querySelectorAll(".todos-div-compact")
+
+    matchingTodoCompactList.forEach((elem) => {
+        elem.remove()
+    })
+    projectsArray.forEach(project =>{
+        const projectTodos = project.todos
+
+        projectTodos.forEach((todo) =>{
+            const parsedTodoDate = parse(todo.dueDate, "yyyy-MM-dd", new Date())
+            const dueDateDifferenceInDays = differenceInDays(parsedTodoDate,  startOfToday())
+            console.log(dueDateDifferenceInDays)
+
+            if(dueDateDifferenceInDays <= 0){
+
+                const todoDiv = createElementTemplate("div", {class: "todos-div-compact", "data-todo-id": `${todo.id}`})
+
+                const todoTitle = createElementTemplate("p", {}, todo.title)
+                const todoDesc = createElementTemplate("p", {}, todo.description)
+                const todoCreationDate = createElementTemplate("p", {}, todo.creationDate)
+                const dueDate = createElementTemplate("p", {}, todo.dueDate)
+                const todoPriority = createElementTemplate("p", {}, todo.priority)
+                
+                todoDiv.append(todoTitle,todoDesc,todoCreationDate,dueDate,todoPriority)
+                todosContainer.append(todoDiv)
+            }
+        })
+
+    })
+
 }
 
 todoContainer.addEventListener("click", (e) => {
@@ -133,6 +167,7 @@ todoContainer.addEventListener("click", (e) => {
         populateTodoModal(todoId, "todo-edit-modal")
         showModal("todo-edit-modal")
     }
+    
 })
 
 todosContainer.addEventListener("click", (e)=>{
@@ -142,6 +177,8 @@ todosContainer.addEventListener("click", (e)=>{
         renderTodo(selectedTodoId)
         showTodoContainer()
         setSectionToReturn(showTodosContainer)
+    }else if(e.target.closest("#back-to-todos-btn")){
+        showProjectsContainer()
     }
 })
 

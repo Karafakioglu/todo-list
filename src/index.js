@@ -6,6 +6,8 @@ import * as projectDomHandler from "./projectDomHandler.js"
 import { getOpenProjectId } from "./data.js";
 import { saveProjects, loadProjects } from "./data.js";
 import * as sidebarDomHandler from "./sidebarDomHandler.js"
+import { differenceInDays, parse, startOfDay } from "date-fns";
+import { getCurrentDate } from "./helperFunctions.js";
 
 
 //testing purposes to use them in console.
@@ -43,3 +45,25 @@ if(projectsArray.length === 0){
     saveProjects()
 }
 projectDomHandler.renderProject()
+
+// let todoDueDateString = projectsArray[0].todos[0].dueDate
+// let todoCreationDateString = projectsArray[0].todos[0].creationDate
+// let projectCreationDateString = projectsArray[0].creationDate
+
+// let todoDueDate = parse(todoDueDateString, 'yyyy-MM-dd' ,new Date())
+// let todoCreationDate = parse(todoCreationDateString, 'dd/MM/yyyy', new Date())
+// let projectCreationDate = parse(projectCreationDateString, 'dd/MM/yyyy', new Date())
+
+// console.log(todoDueDateString)
+// console.log(todoCreationDateString)
+// console.log(projectCreationDateString)
+
+// console.log("------------")
+
+// console.log(todoDueDate)
+// console.log(todoCreationDate)
+// console.log(projectCreationDate)
+
+// console.log(differenceInDays(todoDueDate, projectCreationDate))
+
+

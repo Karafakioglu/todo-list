@@ -6,9 +6,10 @@ export function createRandomId(){
 
 export function getCurrentDate(){
     const date = new Date()
-    const todaysDate = format(date, "dd/MM/yyyy");
+    const todaysDate = format(date, "yyyy-MM-dd");
     return todaysDate
 }
+
 
 export function createElementTemplate(elementType, attributes, text){
     const element = document.createElement(elementType)
