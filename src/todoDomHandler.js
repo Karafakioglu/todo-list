@@ -146,6 +146,38 @@ export function renderDueTodos(){
 
 }
 
+export function renderUpcomingTodos(){
+    const matchingTodoCompactList = todosContainer.querySelectorAll(".todos-div-compact")
+
+    matchingTodoCompactList.forEach((elem) => {
+        elem.remove()
+    })
+    projectsArray.forEach(project =>{
+        const projectTodos = project.todos
+
+        projectTodos.forEach((todo) =>{
+            const parsedTodoDate = parse(todo.dueDate, "yyyy-MM-dd", new Date())
+            const dueDateDifferenceInDays = differenceInDays(parsedTodoDate,  startOfToday())
+            console.log(dueDateDifferenceInDays)
+
+            if(dueDateDifferenceInDays > 0 && dueDateDifferenceInDays <= 7){
+
+                const todoDiv = createElementTemplate("div", {class: "todos-div-compact", "data-todo-id": `${todo.id}`})
+
+                const todoTitle = createElementTemplate("p", {}, todo.title)
+                const todoDesc = createElementTemplate("p", {}, todo.description)
+                const todoCreationDate = createElementTemplate("p", {}, todo.creationDate)
+                const dueDate = createElementTemplate("p", {}, todo.dueDate)
+                const todoPriority = createElementTemplate("p", {}, todo.priority)
+                
+                todoDiv.append(todoTitle,todoDesc,todoCreationDate,dueDate,todoPriority)
+                todosContainer.append(todoDiv)
+            }
+        })
+
+    })
+}
+
 todoContainer.addEventListener("click", (e) => {
     if(e.target.closest(".back-to-project-btn")){
         getSectionToReturn()()
