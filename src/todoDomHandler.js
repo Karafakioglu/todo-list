@@ -57,19 +57,20 @@ export function renderTodos(projectDiv){
     const todosCompactList = createElementTemplate("div", {class: "todos-compact-list"})
     projectDiv.append(todosCompactList)
     const addTodoButton = createElementTemplate("button", {class: "add-todo-btn"}, "Add todo")
-    todosCompactList.append(addTodoButton)
+
     const matchingProject = projectsArray.find((project) => project.id === getOpenProjectId())
     if(matchingProject){
         matchingProject.todos.forEach(todo => {
         const todoCompact = createElementTemplate("div", {class: "todo-compact", "data-todo-id": `${todo.id}`})
         todosCompactList.append(todoCompact)
-        const todoTitle = createElementTemplate("p", {}, todo.title)
-        const todoDesc = createElementTemplate("p", {}, todo.description)
-        const todoCreationDate = createElementTemplate("p", {}, todo.creationDate)
-        const dueDate = createElementTemplate("p", {}, todo.dueDate)
-        const todoPriority = createElementTemplate("p", {}, todo.priority)
+        const todoTitle = createElementTemplate("p", {class: "todo-title-p"}, todo.title)
+        const todoDesc = createElementTemplate("p", {class: "todo-description-p"}, todo.description)
+        const todoCreationDate = createElementTemplate("p", {class: "todo-creationDate-p"}, todo.creationDate)
+        const dueDate = createElementTemplate("p", {class: "todo-dueDate-p"}, todo.dueDate)
+        const todoPriority = createElementTemplate("p", {class: "todo-priority-p"}, todo.priority)
         todoCompact.append(todoTitle, todoDesc, todoCreationDate, dueDate, todoPriority)
         });
+        todosCompactList.append(addTodoButton)
     }
 }
 
@@ -81,7 +82,7 @@ export function renderTodo(selectedTodoId){
             if(key === "id"){
                 continue
             }else{
-                const todoInfo = createElementTemplate("p", {}, selectedTodo[key])
+                const todoInfo = createElementTemplate("p", {class: `todo-detail-${key}-p`}, selectedTodo[key])
                 todoDiv.append(todoInfo)
             }
         }
@@ -90,11 +91,11 @@ export function renderTodo(selectedTodoId){
 function createTodosCompact(todo){
     const todoDiv = createElementTemplate("div", {class: "todos-div-compact", "data-todo-id": `${todo.id}`})
 
-    const todoTitle = createElementTemplate("p", {}, todo.title)
-    const todoDesc = createElementTemplate("p", {}, todo.description)
-    const todoCreationDate = createElementTemplate("p", {}, todo.creationDate)
-    const dueDate = createElementTemplate("p", {}, todo.dueDate)
-    const todoPriority = createElementTemplate("p", {}, todo.priority)
+    const todoTitle = createElementTemplate("p", {class: "todo-title-p"}, todo.title)
+    const todoDesc = createElementTemplate("p", {class: "todo-description-p"}, todo.description)
+    const todoCreationDate = createElementTemplate("p", {class: "todo-creationDate-p"}, todo.creationDate)
+    const dueDate = createElementTemplate("p", {class: "todo-dueDate-p"}, todo.dueDate)
+    const todoPriority = createElementTemplate("p", {class: "todo-priority-p"}, todo.priority)
     
     todoDiv.append(todoTitle,todoDesc,todoCreationDate,dueDate,todoPriority)
     todosContainer.append(todoDiv)

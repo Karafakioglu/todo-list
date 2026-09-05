@@ -1,102 +1,177 @@
 body {
-    display: flex;
+display: flex;
 }
 
+p {margin: 0}
+
 #main-div{
-    height: 100vh;
-    width: 70%;
-    background-color: red;
+height: 100vh;
+width: 85%;
+background-color: oklch(97% 0 none);
+padding: 32px;
+padding-right: 200px;
+padding-left: 200px;
 }
 
 #sidebar-div{
-    height: 100vh;
-    width: 30%;
-    background-color: rgb(43, 91, 162);
+height: 100vh;
+width: 15%;
+background-color: oklch(20.5% 0 none);
+color: oklch(54.6% 0.245 262.881);
+padding: 32px;
+display: grid;
+gap: 8px;
+align-content: start;
 }
 
-/* --- DEBUG --- */
-.project-div {
-    border: 2px solid blue;
-    margin: 8px;
-    padding: 8px;
-    background-color: white;
+.projects-div{
+display: grid;
+gap: 24px;
 }
 
-.todos-compact-list {
-    border: 2px dashed green;
-    margin-top: 8px;
-    padding: 8px;
-    background-color: #eee;
+.project-div{
+display: grid;
+border: 1px solid black;
+padding: 12px;
+gap: 8px;
+grid-template-areas:
+"title creationDate"
+"description description"
+"todoCount todoCount"
+"buttons buttons"
+"todosCompactList todosCompactList";
 }
 
-.todo-compact {
-    border: 1px solid orange;
-    margin: 4px;
-    padding: 4px;
-    background-color: white;
+.project-title-div{
+font-weight: 700;
+grid-area: title;
 }
 
-.todo-compact p {
-    margin: 2px 0;
-    font-size: 12px;
+.project-creationDate-div{
+grid-area: creationDate;
+text-align: right;
 }
 
-.todo-container {
-    border: 3px solid purple;
-    margin: 8px;
-    padding: 8px;
-    background-color: #fff;
+.project-description-div{
+grid-area: description;
 }
 
-.todo-div {
-    border: 2px dashed red;
-    margin-bottom: 8px;
-    padding: 8px;
-    background-color: #f5f5f5;
+.todo-count{
+grid-area: todoCount;
 }
 
-.todo-div p {
-    margin: 4px 0;
+.project-btns-div{
+grid-area: buttons;
+display: flex;
+gap: 8px;
 }
 
-.back-to-project-btn {
-    padding: 6px 12px;
+.todos-compact-list{
+display: grid;
+gap: 8px;
+grid-area: todosCompactList;
 }
 
-/* --- DEBUG: sidebar + all todos view --- */
-#sidebar-div > div {
-    border: 2px solid white;
-    margin: 8px;
+.todo-compact{
+display: grid;
+border: 1px solid black;
+padding: 12px;
+gap: 8px;
+grid-template-areas:
+"title creationDate"
+"description description"
+"priority priority"
+"dueDate dueDate";
+}
+
+.todo-title-p{
+grid-area: title;
+font-weight: 700;
+}
+
+.todo-description-p{
+grid-area: description;
+}
+
+.todo-creationDate-p{
+grid-area: creationDate;
+text-align: right;
+}
+
+.todo-dueDate-p{
+grid-area: dueDate;
+}
+
+.todo-priority-p{
+grid-area: priority;
+}
+
+.todo-div{
+    display: grid;
+    border: 1px solid black;
+    gap: 6px;
     padding: 12px;
-    background-color: rgba(255, 255, 255, 0.15);
-    color: white;
-    cursor: pointer;
+    grid-template-areas: 
+    "title creationDate"
+    "description description"
+    "dueDate dueDate"
+    "status status"
+    "priority priority"
+    "notes notes";
 }
 
-#sidebar-div > div:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+.todo-detail-title-p{
+    grid-area: title;
+    font-weight: 700;
 }
 
-#todos-container-div {
-    border: 3px solid teal;
-    margin: 8px;
-    padding: 8px;
-    background-color: #fff;
+.todo-detail-description-p{
+    grid-area: description;
 }
 
-.todos-div-compact {
-    border: 1px solid crimson;
-    margin: 4px;
-    padding: 6px;
-    background-color: white;
+.todo-detail-dueDate-p{
+    grid-area: dueDate;
 }
 
-.todos-div-compact p {
-    margin: 2px 0;
-    font-size: 12px;
+.todo-detail-status-p{
+    grid-area: status;
 }
 
-#back-to-todos-btn {
-    padding: 6px 12px;
-    margin-bottom: 8px;
+.todo-detail-priority-p{
+    grid-area: priority;
 }
+
+.todo-detail-notes-p{
+    grid-area: notes;
+}
+
+.todo-detail-creationDate-p{
+    grid-area: creationDate;
+    text-align: right;
+}
+
+.todos-div-compact{
+    display: grid;
+    border: 1px solid black;
+    padding: 12px;
+    gap: 8px;
+    grid-template-areas:
+    "title creationDate"
+    "description description"
+    "priority priority"
+    "dueDate dueDate";
+}
+
+#todos-container-div{
+    display: grid;
+    gap: 8px;
+}
+
+.hide{
+    display: none;
+}
+
+#todos-container-div.hide{
+    display: none;
+}
+

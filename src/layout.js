@@ -19,7 +19,8 @@ export const editTodoBtn = createElementTemplate("button", {class: "edit-todo-bt
 export const todoContainer = createElementTemplate("div", {class: "todo-container"})
 
 export const todoDiv = createElementTemplate("div", {class: "todo-div"})
-todoContainer.style.display = "none"
+// todoContainer.style.display = "none"
+todoContainer.classList.add("hide")
 
 //Side Div part
 
@@ -29,7 +30,8 @@ export const todosContainer = createElementTemplate("div", {id: "todos-container
 
 
 const backToTodosBtn = createElementTemplate("button", {id: "back-to-todos-btn"}, "Back")
-todosContainer.style.display = "none"
+// todosContainer.style.display = "none"
+todosContainer.classList.add("hide")
 
 const allTodos = createElementTemplate("div", {id: "all-todos-div"}, "All Todos");
 const dueTodos = createElementTemplate("div", {id: "due-todos-div"}, "Due Todos");
@@ -49,19 +51,28 @@ sidebarDiv.append(allTodos,dueTodos,upcomingTodos,finishedTodos)
 todosContainer.append(backToTodosBtn)
 
 export function showProjectsContainer(){
-    projectsContainer.style.display = "block"
-    todoContainer.style.display = "none"
-    todosContainer.style.display = "none"
+    // projectsContainer.style.display = "block"
+    // todoContainer.style.display = "none"
+    // todosContainer.style.display = "none"
+    projectsContainer.classList.remove("hide")
+    todoContainer.classList.add("hide")
+    todosContainer.classList.add("hide")
 }
 
 export function showTodoContainer(){
-    projectsContainer.style.display = "none"
-    todoContainer.style.display = "block"
-    todosContainer.style.display = "none"
+    // projectsContainer.style.display = "none"
+    // todoContainer.style.display = "block"
+    // todosContainer.style.display = "none"
+    projectsContainer.classList.add("hide")
+    todoContainer.classList.remove("hide")
+    todosContainer.classList.add("hide")
 }
 
 export function showTodosContainer(){
-    projectsContainer.style.display = "none"
-    todoContainer.style.display = "none"
-    todosContainer.style.display = "block"
+    // projectsContainer.style.display = "none"
+    // todoContainer.style.display = "none"
+    // todosContainer.style.display = "block"
+    projectsContainer.classList.add("hide")
+    todoContainer.classList.add("hide")
+    todosContainer.classList.remove("hide")
 }

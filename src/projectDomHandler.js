@@ -69,7 +69,7 @@ export function renderProject(){
                 continue
             }
             else{
-                const projectDetailDiv = createElementTemplate("div", {}, `${element[key]}`)
+                const projectDetailDiv = createElementTemplate("div", {class: `project-${key}-div`}, `${element[key]}`)
                 projectDiv.append(projectDetailDiv)
             }
         }
