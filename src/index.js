@@ -1,3 +1,4 @@
+import "./reset.css"
 import "./style.css";
 import { projectsArray } from "./data.js";
 import { Project } from "./projectHandler.js";
