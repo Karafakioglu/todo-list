@@ -1,8 +1,7 @@
 import { projectsArray, getOpenProjectId, saveProjects, setSectionToReturn, getSectionToReturn, setActiveFilter, getActiveFilter } from "./data.js";
-import { createElementTemplate, createFormField, createSelectField, getCurrentDate } from "./helperFunctions.js";
+import { createElementTemplate, createFormField, createSelectField } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
-import { body, projectsDiv, mainDiv, todoDiv, todoContainer, showProjectsContainer, todosContainer, showTodoContainer, showTodosContainer } from "./layout.js";
-import { Todo } from "./todoHandler.js";
+import { body, projectsDiv, todoDiv, todoContainer, showProjectsContainer, todosContainer, showTodoContainer, showTodosContainer } from "./layout.js";
 import { refreshProjectView } from "./projectDomHandler.js";
 import { differenceInDays, parse, startOfToday } from "date-fns";
 
@@ -19,7 +18,6 @@ function editTodoDom(e){
     const statusInput = editTodoDom.querySelector("#status");
     const priorityInput = editTodoDom.querySelector("#priority");
     const notesInput = editTodoDom.querySelector("#notes")
-    // editTodo(getOpenProjectId(), relevantTodoId, {title: titleInput.value, description: descInput.value, dueDate: dueDateInput.value, status: statusInput.value, priority: priorityInput.value, notes: notesInput.value })
     returnSelectedTodoItem(relevantTodoId).editTodo({title: titleInput.value, description: descInput.value, dueDate: dueDateInput.value, status: statusInput.value, priority: priorityInput.value, notes: notesInput.value })
 
     closeModal("todo-edit-modal")
@@ -68,8 +66,9 @@ export function renderTodos(projectDiv){
         const todoTitle = createElementTemplate("p", {}, todo.title)
         const todoDesc = createElementTemplate("p", {}, todo.description)
         const todoCreationDate = createElementTemplate("p", {}, todo.creationDate)
+        const dueDate = createElementTemplate("p", {}, todo.dueDate)
         const todoPriority = createElementTemplate("p", {}, todo.priority)
-        todoCompact.append(todoTitle, todoDesc, todoCreationDate,todoPriority)
+        todoCompact.append(todoTitle, todoDesc, todoCreationDate, dueDate, todoPriority)
         });
     }
 }
@@ -139,7 +138,6 @@ export function isUpcoming(todo){
 export function isDue(todo){
     const parsedTodoDate = parse(todo.dueDate, "yyyy-MM-dd", new Date())
     const dueDateDifferenceInDays = differenceInDays(parsedTodoDate,  startOfToday())
-    console.log(dueDateDifferenceInDays)
 
     return (dueDateDifferenceInDays <= 0)
 }
@@ -158,7 +156,6 @@ todoContainer.addEventListener("click", (e) => {
 
         project.deleteTodo(todoId)
         saveProjects()
-        // showProjectsContainer()
         getSectionToReturn()()
         refreshProjectView()
         renderConditionalTodos(getActiveFilter())
@@ -183,14 +180,6 @@ todosContainer.addEventListener("click", (e)=>{
         showProjectsContainer()
     }
 })
-
-
-
-// function returnSelectedTodoItem(selectedTodoId){
-    // const project = projectsArray.find((project) => project.id === getOpenProjectId())
-    // const todo = project.todos.find((todo) => todo.id === selectedTodoId)
-    // return todo
-// }
 
 function returnSelectedTodoItem(selectedTodoId){
     return projectsArray.flatMap(project => project.todos).find(todo => todo.id === selectedTodoId)

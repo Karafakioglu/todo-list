@@ -1,8 +1,8 @@
 import { projectsArray, saveProjects, setSectionToReturn } from "./data.js";
-import { createProject, editProject, deleteProject, getProjects } from "./projectHandler.js";
+import { createProject, deleteProject } from "./projectHandler.js";
 import { createElementTemplate } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
-import { body, createProjectBtn, projectsDiv, todoDiv, projectsContainer, todoContainer, showTodoContainer, showTodosContainer, showProjectsContainer} from "./layout.js";
+import { body, createProjectBtn, projectsDiv, showTodoContainer, showProjectsContainer} from "./layout.js";
 import { getOpenProjectId, setOpenProjectId } from "./data.js";
 import { renderTodos, renderTodo } from "./todoDomHandler.js";
 
@@ -16,12 +16,10 @@ projectsDiv.addEventListener("click", (e) => {
     if(e.target.closest(".edit-project-btn")) {
         populateModal(e, "project-edit-modal")
         showModal("project-edit-modal")
-        console.log(e.target.closest(".edit-project-btn"))
     }
     else if(e.target.closest(".delete-project-btn")) {
         deleteProjectDom(e)
         setOpenProjectId(null)
-        console.log(e.target.closest(".delete-project-btn"))
 
     }
     else if(e.target.closest(".add-todo-btn")){
@@ -38,7 +36,6 @@ projectsDiv.addEventListener("click", (e) => {
     }
     else if(e.target.closest(".project-div")) {
         const project = e.target.closest(".project-div")
-        console.log(e.target.closest(".project-div"))
 
 
         if(project.dataset.id === getOpenProjectId()) {
@@ -97,12 +94,10 @@ function createProjectDom(){
 function editProjectDom(e){
     
     const editProjectDom = document.getElementById("project-edit-modal")
-    // const relevantProjectId = editProjectDom.dataset.id
     const project = projectsArray.find((project) => project.id === editProjectDom.dataset.id)
 
     const titleInput = editProjectDom.querySelector("#id")
     const descInput = editProjectDom.querySelector("#description");
-    // editProject(relevantProjectId, {title: titleInput.value, description: descInput.value})
     project.editProject({title: titleInput.value, description: descInput.value})
 
     closeModal("project-edit-modal")

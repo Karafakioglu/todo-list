@@ -6,6 +6,7 @@ sidebarDiv.addEventListener("click", (e) =>{
         showTodosContainer()
         // renderAllTodos()
         renderConditionalTodos(isAny)
+        console.log(e.target)
     }
     else if(e.target.closest("#due-todos-div")){
         showTodosContainer()
