@@ -1,28 +1,26 @@
 import { sidebarDiv, showTodosContainer } from "./layout.js";
-import { renderAllTodos, renderDueTodos, renderUpcomingTodos, renderDoneTodos } from "./todoDomHandler.js";
+import { isDone, isDue, isUpcoming, isAny, renderConditionalTodos } from "./todoDomHandler.js";
 
 sidebarDiv.addEventListener("click", (e) =>{
     if(e.target.closest("#all-todos-div")){
-        // console.log("All todos")
         showTodosContainer()
-        renderAllTodos()
+        // renderAllTodos()
+        renderConditionalTodos(isAny)
     }
     else if(e.target.closest("#due-todos-div")){
-        // console.log("Due todos")
         showTodosContainer()
-        renderDueTodos()
+        // renderDueTodos()
+        renderConditionalTodos(isDue)
 
     }else if(e.target.closest("#upcoming-todos-div")){
-        // console.log("Upcoming todos")
-
         showTodosContainer()
-        renderUpcomingTodos()
+        // renderUpcomingTodos()
+        renderConditionalTodos(isUpcoming)
 
     }else if(e.target.closest("#finished-todos-div")){
-        // console.log("Finished todos")
-
         showTodosContainer()
-        renderDoneTodos()
+        // renderDoneTodos()
+        renderConditionalTodos(isDone)
     }
 
 })

@@ -1,4 +1,4 @@
-import { projectsArray, getOpenProjectId, saveProjects, setSectionToReturn, getSectionToReturn } from "./data.js";
+import { projectsArray, getOpenProjectId, saveProjects, setSectionToReturn, getSectionToReturn, setActiveFilter, getActiveFilter } from "./data.js";
 import { createElementTemplate, createFormField, createSelectField, getCurrentDate } from "./helperFunctions.js";
 import { showModal, closeModal } from "./modalHandler.js";
 import { body, projectsDiv, mainDiv, todoDiv, todoContainer, showProjectsContainer, todosContainer, showTodoContainer, showTodosContainer } from "./layout.js";
@@ -26,7 +26,7 @@ function editTodoDom(e){
     saveProjects()
     renderTodo(relevantTodoId)
     refreshProjectView()
-    renderAllTodos()
+    renderConditionalTodos(getActiveFilter())
 
 }
 
@@ -46,7 +46,7 @@ function createTodoDom(e){
     closeModal("todo-new-modal");
     saveProjects()
     refreshProjectView()
-    renderAllTodos()
+    renderConditionalTodos(getActiveFilter())
 }
 
 
@@ -88,124 +88,64 @@ export function renderTodo(selectedTodoId){
         }
 }
 
+function createTodosCompact(todo){
+    const todoDiv = createElementTemplate("div", {class: "todos-div-compact", "data-todo-id": `${todo.id}`})
 
-export function renderAllTodos(){
+    const todoTitle = createElementTemplate("p", {}, todo.title)
+    const todoDesc = createElementTemplate("p", {}, todo.description)
+    const todoCreationDate = createElementTemplate("p", {}, todo.creationDate)
+    const dueDate = createElementTemplate("p", {}, todo.dueDate)
+    const todoPriority = createElementTemplate("p", {}, todo.priority)
+    
+    todoDiv.append(todoTitle,todoDesc,todoCreationDate,dueDate,todoPriority)
+    todosContainer.append(todoDiv)
+}
+
+function clearCompactTodo(){
     const matchingTodoCompactList = todosContainer.querySelectorAll(".todos-div-compact")
 
     matchingTodoCompactList.forEach((elem) => {
         elem.remove()
-    })
-    projectsArray.forEach((project) => {
-
-        const projectTodos = project.todos
-
-        projectTodos.forEach((todo) => {
-
-            const todoDiv = createElementTemplate("div", {class: "todos-div-compact", "data-todo-id": `${todo.id}`})
-
-            const todoTitle = createElementTemplate("p", {}, todo.title)
-            const todoDesc = createElementTemplate("p", {}, todo.description)
-            const todoCreationDate = createElementTemplate("p", {}, todo.creationDate)
-            const todoPriority = createElementTemplate("p", {}, todo.priority)
-            todoDiv.append(todoTitle,todoDesc,todoCreationDate,todoPriority)
-            todosContainer.append(todoDiv)
-        })
     })
 }
 
-export function renderDueTodos(){
-    const matchingTodoCompactList = todosContainer.querySelectorAll(".todos-div-compact")
 
-    matchingTodoCompactList.forEach((elem) => {
-        elem.remove()
-    })
+export function renderConditionalTodos(isTodoCondition){
+    setActiveFilter(isTodoCondition)
+    clearCompactTodo()
     projectsArray.forEach(project =>{
         const projectTodos = project.todos
 
         projectTodos.forEach((todo) =>{
-            const parsedTodoDate = parse(todo.dueDate, "yyyy-MM-dd", new Date())
-            const dueDateDifferenceInDays = differenceInDays(parsedTodoDate,  startOfToday())
-            console.log(dueDateDifferenceInDays)
-
-            if(dueDateDifferenceInDays <= 0){
-
-                const todoDiv = createElementTemplate("div", {class: "todos-div-compact", "data-todo-id": `${todo.id}`})
-
-                const todoTitle = createElementTemplate("p", {}, todo.title)
-                const todoDesc = createElementTemplate("p", {}, todo.description)
-                const todoCreationDate = createElementTemplate("p", {}, todo.creationDate)
-                const dueDate = createElementTemplate("p", {}, todo.dueDate)
-                const todoPriority = createElementTemplate("p", {}, todo.priority)
-                
-                todoDiv.append(todoTitle,todoDesc,todoCreationDate,dueDate,todoPriority)
-                todosContainer.append(todoDiv)
-            }
-        })
-
-    })
-
-}
-
-export function renderUpcomingTodos(){
-    const matchingTodoCompactList = todosContainer.querySelectorAll(".todos-div-compact")
-
-    matchingTodoCompactList.forEach((elem) => {
-        elem.remove()
-    })
-    projectsArray.forEach(project =>{
-        const projectTodos = project.todos
-
-        projectTodos.forEach((todo) =>{
-            const parsedTodoDate = parse(todo.dueDate, "yyyy-MM-dd", new Date())
-            const dueDateDifferenceInDays = differenceInDays(parsedTodoDate,  startOfToday())
-            console.log(dueDateDifferenceInDays)
-
-            if(dueDateDifferenceInDays > 0 && dueDateDifferenceInDays <= 7){
-
-                const todoDiv = createElementTemplate("div", {class: "todos-div-compact", "data-todo-id": `${todo.id}`})
-
-                const todoTitle = createElementTemplate("p", {}, todo.title)
-                const todoDesc = createElementTemplate("p", {}, todo.description)
-                const todoCreationDate = createElementTemplate("p", {}, todo.creationDate)
-                const dueDate = createElementTemplate("p", {}, todo.dueDate)
-                const todoPriority = createElementTemplate("p", {}, todo.priority)
-                
-                todoDiv.append(todoTitle,todoDesc,todoCreationDate,dueDate,todoPriority)
-                todosContainer.append(todoDiv)
+            if(isTodoCondition(todo)){
+                createTodosCompact(todo)
             }
         })
 
     })
 }
 
-export function renderDoneTodos(){
-    const matchingTodoCompactList = todosContainer.querySelectorAll(".todos-div-compact")
+export function isDone(todo){
+    return todo.status === "done"
+}
 
-    matchingTodoCompactList.forEach((elem) => {
-        elem.remove()
-    })
-    projectsArray.forEach(project =>{
-        const projectTodos = project.todos
+export function isUpcoming(todo){
+    const parsedTodoDate = parse(todo.dueDate, "yyyy-MM-dd", new Date())
+    const dueDateDifferenceInDays = differenceInDays(parsedTodoDate,  startOfToday())
 
-        projectTodos.forEach((todo) =>{
+    return (dueDateDifferenceInDays > 0 && dueDateDifferenceInDays <= 7)
+}
 
-            if(todo.status === "done"){
-                const todoDiv = createElementTemplate("div", {class: "todos-div-compact", "data-todo-id": `${todo.id}`})
+export function isDue(todo){
+    const parsedTodoDate = parse(todo.dueDate, "yyyy-MM-dd", new Date())
+    const dueDateDifferenceInDays = differenceInDays(parsedTodoDate,  startOfToday())
+    console.log(dueDateDifferenceInDays)
 
-                const todoTitle = createElementTemplate("p", {}, todo.title)
-                const todoDesc = createElementTemplate("p", {}, todo.description)
-                const todoCreationDate = createElementTemplate("p", {}, todo.creationDate)
-                const dueDate = createElementTemplate("p", {}, todo.dueDate)
-                const todoPriority = createElementTemplate("p", {}, todo.priority)
-                
-                todoDiv.append(todoTitle,todoDesc,todoCreationDate,dueDate,todoPriority)
-                todosContainer.append(todoDiv)
-            }
+    return (dueDateDifferenceInDays <= 0)
+}
 
-
-        })
-
-    })
+export function isAny(todo){
+    return true
 }
 
 todoContainer.addEventListener("click", (e) => {
@@ -221,7 +161,7 @@ todoContainer.addEventListener("click", (e) => {
         // showProjectsContainer()
         getSectionToReturn()()
         refreshProjectView()
-        renderAllTodos()
+        renderConditionalTodos(getActiveFilter())
 
     }
     else if(e.target.closest(".edit-todo-btn")){

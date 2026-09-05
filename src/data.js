@@ -5,6 +5,7 @@ import { showProjectsContainer } from "./layout.js";
 
 let openProjectId = null;
 let sectionToReturn = showProjectsContainer
+let activeFilter = (todo) => true
 
 export function getOpenProjectId(){
     return openProjectId
@@ -20,6 +21,14 @@ export function getSectionToReturn(){
 
 export function setSectionToReturn(section){
     sectionToReturn = section
+}
+
+export function getActiveFilter(){
+    return activeFilter
+}
+
+export function setActiveFilter(filter){
+    activeFilter = filter
 }
 
 export function saveProjects(){
